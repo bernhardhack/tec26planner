@@ -297,6 +297,11 @@
     font-size:15px; width:100%; font-family:inherit;
   }
   .searchbox input::placeholder{color:var(--ink-faint);}
+  .searchclear{
+    flex:none; border:none; background:var(--rule-strong); color:var(--ink);
+    width:20px;height:20px; border-radius:50%; cursor:pointer;
+    display:flex;align-items:center;justify-content:center; font-size:11px; padding:0;
+  }
 
   .chiprow{
     display:flex; gap:6px; overflow-x:auto; padding-bottom:2px;
@@ -332,14 +337,35 @@
     flex:1;
     padding:6px 0 40px;
   }
-  .daylabel{
+  .daylabel-row{
     padding:18px 18px 8px;
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+  }
+  .daylabel{
     font-family:'Barlow Condensed', sans-serif;
     font-weight:700;
     color:var(--heading);
     text-transform:uppercase;
     letter-spacing:.07em;
     font-size:13.5px;
+  }
+  .jumpnow{
+    flex:none;
+    border:1px solid var(--burgundy);
+    background:var(--paper);
+    color:var(--burgundy);
+    border-radius:999px;
+    padding:5px 12px;
+    font-family:'Barlow Condensed', sans-serif;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.03em;
+    font-size:11.5px;
+    cursor:pointer;
+  }
+  .today-dot{
+    display:inline-block; width:6px;height:6px;border-radius:50%;
+    background:var(--burgundy); margin-left:3px; vertical-align:2px;
   }
   .empty{
     padding:50px 24px;
@@ -360,6 +386,7 @@
     font-size:13.5px;
     cursor:pointer;
     color:var(--ink);
+    margin:0 4px 8px;
   }
 
   .row{
@@ -367,6 +394,14 @@
     padding:2px 14px;
     gap:10px;
     align-items:stretch;
+  }
+  .row.live .card{
+    box-shadow:0 0 0 1.5px var(--burgundy);
+  }
+  .live-badge{
+    background:var(--burgundy) !important;
+    color:#fff !important;
+    border-color:var(--burgundy) !important;
   }
   .rail{
     flex:none;
@@ -494,6 +529,17 @@
     z-index:90; opacity:0; pointer-events:none; transition:opacity .18s ease;
   }
   .scrim.show{opacity:1; pointer-events:auto;}
+  .toast{
+    position:fixed; left:50%; bottom:22px; z-index:120;
+    transform:translate(-50%,12px); opacity:0; pointer-events:none;
+    background:var(--ink); color:var(--paper);
+    font-size:13.5px; font-weight:600;
+    padding:11px 18px; border-radius:999px;
+    max-width:88vw; text-align:center;
+    box-shadow:0 6px 22px rgba(0,0,0,.28);
+    transition:opacity .18s ease, transform .18s ease;
+  }
+  .toast.show{opacity:1; transform:translate(-50%,0);}
   .sheet{
     position:fixed; left:0; right:0; bottom:0; z-index:91;
     max-width:640px; margin:0 auto;
@@ -515,6 +561,15 @@
     overflow-y:auto;
     padding:6px 20px 28px;
   }
+  .backlink{
+    display:flex; align-items:center; gap:4px;
+    border:none; background:none; padding:6px 0 0; margin:0;
+    font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:12.5px;
+    text-transform:uppercase; letter-spacing:.03em;
+    color:var(--ink-muted); cursor:pointer;
+  }
+  .backlink svg{width:14px;height:14px;flex:none;}
+  .backlink:hover{color:var(--ink);}
   .sheet-top{
     display:flex; justify-content:space-between; align-items:flex-start; gap:10px;
     padding-top:6px;
@@ -787,6 +842,7 @@
     <div class="handle"></div>
     <div class="sheet-scroll" id="sheetContent"></div>
   </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 </div>
 
 <script>
@@ -1162,7 +1218,8 @@ var state = {
   day: 1,
   cat: 'all',
   query: '',
-  sheetId: null
+  sheetId: null,
+  sheetStack: []
 };
 
 var SAVED_KEY = 'tec26-myplan-v1';
@@ -1180,11 +1237,30 @@ function persistSaved(){
 var saved = loadSaved();
 
 function isSaved(id){ return saved.indexOf(id) > -1; }
+var toastTimer = null;
+function showToast(msg){
+  var t = document.getElementById('toast');
+  if(!t) return;
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ t.classList.remove('show'); }, 1800);
+}
 function toggleSaved(id){
   var i = saved.indexOf(id);
-  if(i>-1){ saved.splice(i,1); } else { saved.push(id); }
+  var e = EVENTS_BY_ID[id];
+  var title = e ? e.title : 'Session';
+  if(i>-1){ saved.splice(i,1); showToast('Removed “'+title+'” from My Plan'); }
+  else { saved.push(id); showToast('Added “'+title+'” to My Plan'); }
   persistSaved();
   render();
+  if(document.getElementById('sheet').classList.contains('show') && state.sheetId){
+    if(typeof state.sheetId === 'string' && state.sheetId.indexOf('speaker:')===0){
+      openSpeakerSheet(state.sheetId.slice(8), true);
+    } else {
+      openSheet(state.sheetId, true);
+    }
+  }
 }
 
 /* ============================= THEME ============================= */
@@ -1236,25 +1312,25 @@ function initials(name){
 function dayLabel(d){ return d===1 ? 'Thursday, 10 September' : 'Friday, 11 September'; }
 function dayShort(d){ return d===1 ? 'Thu' : 'Fri'; }
 
+function matchesQuery(e, query){
+  if(!query) return true;
+  var q = query.toLowerCase();
+  var hay = (e.title+' '+e.room+' '+e.desc+' '+(e.speakers||[]).map(function(s){return s.name+' '+s.role;}).join(' ')).toLowerCase();
+  if(hay.indexOf(q) > -1) return true;
+  // also check children (workshops)
+  if(e.isGroup && e.childIds){
+    return e.childIds.some(function(cid){
+      var c = EVENTS_BY_ID[cid];
+      return c && (c.title+' '+c.desc).toLowerCase().indexOf(q) > -1;
+    });
+  }
+  return false;
+}
+
 function matchesFilters(e){
   if(e.day !== state.day) return false;
   if(state.cat !== 'all' && e.cat !== state.cat) return false;
-  if(state.query){
-    var q = state.query.toLowerCase();
-    var hay = (e.title+' '+e.room+' '+e.desc+' '+(e.speakers||[]).map(function(s){return s.name+' '+s.role;}).join(' ')).toLowerCase();
-    if(hay.indexOf(q) === -1){
-      // also check children (workshops)
-      if(e.isGroup && e.childIds){
-        var childHit = e.childIds.some(function(cid){
-          var c = EVENTS_BY_ID[cid];
-          return c && (c.title+' '+c.desc).toLowerCase().indexOf(q) > -1;
-        });
-        if(!childHit) return false;
-      } else {
-        return false;
-      }
-    }
-  }
+  if(!matchesQuery(e, state.query)) return false;
   return true;
 }
 
@@ -1264,21 +1340,41 @@ function timelineEvents(){
     .sort(function(a,b){ return a.start.localeCompare(b.start); });
 }
 
+/* ============================= "NOW" (live day/time) ============================= */
+
+function pad2(n){ return (n<10?'0':'')+n; }
+function nowInfo(){
+  var d = new Date();
+  var day = null;
+  if(d.getFullYear()===2026 && d.getMonth()===8 && d.getDate()===10) day = 1;
+  else if(d.getFullYear()===2026 && d.getMonth()===8 && d.getDate()===11) day = 2;
+  if(!day) return null;
+  return {day:day, time: pad2(d.getHours())+':'+pad2(d.getMinutes())};
+}
+function isLiveNow(e){
+  var n = nowInfo();
+  if(!n || e.isGroup || e.day !== n.day) return false;
+  return n.time >= e.start && n.time < e.end;
+}
+
 /* ============================= RENDER: SCHEDULE ============================= */
 
 function renderSchedule(){
   var list = timelineEvents();
+  var n = nowInfo();
   var html = '';
   html += '<div class="controls">';
   html += '  <div class="daybar">';
   [1,2].forEach(function(d){
-    html += '<button data-day="'+d+'" class="'+(state.day===d?'active':'')+'">'+dayShort(d)+'<span class="d">'+(d===1?'10 Sep':'11 Sep')+'</span></button>';
+    var isToday = n && n.day === d;
+    html += '<button data-day="'+d+'" class="'+(state.day===d?'active':'')+'">'+dayShort(d)+(isToday?' <span class="today-dot" aria-hidden="true"></span>':'')+'<span class="d">'+(d===1?'10 Sep':'11 Sep')+'</span></button>';
   });
   html += '  </div>';
   html += '  <div class="searchrow">';
   html += '    <div class="searchbox">';
   html += '      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>';
   html += '      <input id="searchInput" type="text" placeholder="Search sessions, speakers, topics…" value="'+esc(state.query)+'">';
+  if(state.query) html += '      <button id="searchClear" class="searchclear" aria-label="Clear search">✕</button>';
   html += '    </div>';
   html += '  </div>';
   html += '  <div class="chiprow" id="chipRow">';
@@ -1287,13 +1383,35 @@ function renderSchedule(){
   html += '  </div>';
   html += '</div>';
 
-  html += '<div class="daylabel">'+dayLabel(state.day)+'</div>';
+  html += '<div class="daylabel-row"><div class="daylabel">'+dayLabel(state.day)+'</div>';
+  if(n) html += '<button id="jumpNow" class="jumpnow">'+(n.day===state.day?'Jump to now':'Go to today')+'</button>';
+  html += '</div>';
 
   if(list.length === 0){
-    html += '<div class="empty"><span class="big">🔍</span><p>No sessions match your filters.</p><button id="clearFilters">Clear filters</button></div>';
+    html += emptyStateHTML();
   } else {
     list.forEach(function(e){ html += eventRow(e); });
   }
+  return html;
+}
+
+function emptyStateHTML(){
+  var filterBits = [];
+  if(state.cat !== 'all') filterBits.push('“'+catLabel(state.cat)+'”');
+  if(state.query) filterBits.push('“'+state.query+'”');
+  var why = filterBits.length ? 'No sessions on '+dayLabel(state.day)+' match '+filterBits.join(' + ')+'.' : 'No sessions on '+dayLabel(state.day)+'.';
+
+  var otherDay = state.day === 1 ? 2 : 1;
+  var otherMatches = state.query ? EVENTS.filter(function(e){
+    return e.day===otherDay && !e.slotTBC && (state.cat==='all'||e.cat===state.cat) && matchesQuery(e, state.query);
+  }) : [];
+
+  var html = '<div class="empty"><span class="big">🔍</span><p>'+esc(why)+'</p>';
+  if(otherMatches.length){
+    html += '<p style="margin-top:-6px">Found '+otherMatches.length+' match'+(otherMatches.length>1?'es':'')+' on '+dayLabel(otherDay)+' instead.</p>';
+    html += '<button id="goOtherDay" data-goday="'+otherDay+'">Switch to '+dayLabel(otherDay).split(',')[0]+'</button>';
+  }
+  html += '<button id="clearFilters">Clear filters</button></div>';
   return html;
 }
 
@@ -1308,7 +1426,8 @@ function eventRow(e){
   var sub = e.room || (e.speakers[0] ? e.speakers[0].role : '');
   var speakerLine = e.speakers && e.speakers.length ? e.speakers.map(function(s){return s.name;}).join(', ') : sub;
   var savedCls = isSaved(e.id) ? ' saved' : '';
-  var html = '<div class="row">';
+  var live = isLiveNow(e);
+  var html = '<div class="row'+(live?' live':'')+'"'+(live?' id="liveRow"':'')+'>';
   html += '  <div class="rail">'+e.start+'<span class="end">'+e.end+'</span></div>';
   html += '  <div class="card" style="--cat-color:var('+color+');--cat-soft:var('+soft+')" data-open="'+e.id+'">';
   html += '    <div class="toprow">';
@@ -1318,7 +1437,7 @@ function eventRow(e){
   }
   html += '    </div>';
   if(speakerLine) html += '    <div class="meta">'+esc(speakerLine)+'</div>';
-  html += '    <div class="tagsrow"><span class="badge" style="--cat-color:var('+color+');--cat-soft:var('+soft+')">'+catLabel(e.cat)+'</span>';
+  html += '    <div class="tagsrow">'+(live?'<span class="badge live-badge">● Now</span>':'')+'<span class="badge" style="--cat-color:var('+color+');--cat-soft:var('+soft+')">'+catLabel(e.cat)+'</span>';
   if(e.note) html += '<span class="badge outline">Note</span>';
   html += '</div>';
   html += '  </div>';
@@ -1542,12 +1661,33 @@ function subcard(w){
 
 /* ============================= SHEET (detail view) ============================= */
 
-function openSpeakerSheet(name){
+var lastFocusedTrigger = null;
+
+function currentSheetDescriptor(){
+  if(typeof state.sheetId === 'string' && state.sheetId.indexOf('speaker:')===0){
+    return {type:'speaker', name: state.sheetId.slice(8)};
+  }
+  return {type:'event', id: state.sheetId};
+}
+function backLinkHTML(){
+  if(!state.sheetStack.length) return '';
+  var prev = state.sheetStack[state.sheetStack.length-1];
+  var label = prev.type==='speaker' ? prev.name : (EVENTS_BY_ID[prev.id] ? EVENTS_BY_ID[prev.id].title : 'Back');
+  return '<button type="button" class="backlink" data-back><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>Back to '+esc(label)+'</button>';
+}
+function goBack(){
+  var prev = state.sheetStack.pop();
+  if(!prev){ closeSheet(); return; }
+  if(prev.type==='speaker') openSpeakerSheet(prev.name); else openSheet(prev.id);
+}
+
+function openSpeakerSheet(name, skipFocus){
   var dir = buildSpeakerDirectory();
   var sp = dir.filter(function(s){return s.name===name;})[0];
   if(!sp) return;
   state.sheetId = 'speaker:'+name;
   var html = '';
+  html += backLinkHTML();
   html += '<div class="sheet-top"><span class="badge" style="--cat-color:var(--charcoal);--cat-soft:var(--charcoal-soft)">Speaker</span><button class="close" id="sheetClose" aria-label="Close">✕</button></div>';
   html += '<div class="speakerhero">'+avatarHTML(sp.name, true)+'<div class="name">'+esc(sp.name)+'</div><div class="role">'+esc(sp.role)+'</div></div>';
   html += '<div class="speaker-sessions-lbl">Appears in '+sp.sessions.length+' session'+(sp.sessions.length>1?'s':'')+' — tap to view time, room and add to My Plan</div>';
@@ -1558,14 +1698,16 @@ function openSpeakerSheet(name){
   document.getElementById('scrim').classList.add('show');
   document.getElementById('sheet').classList.add('show');
   wireSheet();
+  if(!skipFocus) focusSheet();
 }
 
-function openSheet(id){
+function openSheet(id, skipFocus){
   state.sheetId = id;
   var e = EVENTS_BY_ID[id];
   if(!e) return;
   var color = catColor(e.cat);
   var html = '';
+  html += backLinkHTML();
   html += '<div class="sheet-top"><span class="badge" style="--cat-color:var('+color+');--cat-soft:var('+catSoft(e.cat)+')">'+catLabel(e.cat)+'</span><button class="close" id="sheetClose" aria-label="Close">✕</button></div>';
   html += '<h2>'+esc(e.title)+'</h2>';
   html += '<div class="when">';
@@ -1595,7 +1737,7 @@ function openSheet(id){
   if(!e.isGroup){
     var isSv = isSaved(e.id);
     html += '<div class="sheet-actions">';
-    html += '<button class="btn primary'+(isSv?' saved':'')+'" id="sheetSave" data-save="'+e.id+'">'+starIcon(isSv)+(isSv?'Saved to My Plan':'Add to My Plan')+'</button>';
+    html += '<button class="btn primary'+(isSv?' saved':'')+'" id="sheetSave">'+starIcon(isSv)+(isSv?'Saved to My Plan':'Add to My Plan')+'</button>';
     html += '</div>';
   }
 
@@ -1603,21 +1745,35 @@ function openSheet(id){
   document.getElementById('scrim').classList.add('show');
   document.getElementById('sheet').classList.add('show');
   wireSheet();
+  if(!skipFocus) focusSheet();
+}
+function focusSheet(){
+  var el = document.getElementById('sheetClose');
+  if(el) el.focus({preventScroll:true});
 }
 function closeSheet(){
   state.sheetId = null;
+  state.sheetStack = [];
   document.getElementById('scrim').classList.remove('show');
   document.getElementById('sheet').classList.remove('show');
+  if(lastFocusedTrigger && document.contains(lastFocusedTrigger)){
+    lastFocusedTrigger.focus({preventScroll:true});
+  }
+  lastFocusedTrigger = null;
 }
 
 function wireSheet(){
   var close = document.getElementById('sheetClose');
   if(close) close.addEventListener('click', closeSheet);
   var saveBtn = document.getElementById('sheetSave');
-  if(saveBtn) saveBtn.addEventListener('click', function(){ toggleSaved(saveBtn.getAttribute('data-save')); openSheet(state.sheetId); });
+  if(saveBtn) saveBtn.addEventListener('click', function(){ toggleSaved(state.sheetId); });
+  document.querySelectorAll('#sheetContent [data-back]').forEach(function(el){
+    el.addEventListener('click', function(ev){ ev.stopPropagation(); goBack(); });
+  });
   document.querySelectorAll('#sheetContent [data-open]').forEach(function(el){
     el.addEventListener('click', function(ev){
       ev.stopPropagation();
+      state.sheetStack.push(currentSheetDescriptor());
       openSheet(el.getAttribute('data-open'));
     });
   });
@@ -1630,6 +1786,7 @@ function wireSheet(){
   document.querySelectorAll('#sheetContent [data-open-speaker]').forEach(function(el){
     el.addEventListener('click', function(ev){
       ev.stopPropagation();
+      state.sheetStack.push(currentSheetDescriptor());
       openSpeakerSheet(el.getAttribute('data-open-speaker'));
     });
   });
@@ -1665,19 +1822,38 @@ function wireMain(){
   if(search){
     search.addEventListener('input', function(){ state.query = search.value; render(); search.focus(); search.setSelectionRange(search.value.length, search.value.length); });
   }
+  var searchClear = document.getElementById('searchClear');
+  if(searchClear) searchClear.addEventListener('click', function(){ state.query=''; render(); var s=document.getElementById('searchInput'); if(s) s.focus(); });
   var clearBtn = document.getElementById('clearFilters');
   if(clearBtn) clearBtn.addEventListener('click', function(){ state.cat='all'; state.query=''; render(); });
+  var goOtherDay = document.getElementById('goOtherDay');
+  if(goOtherDay) goOtherDay.addEventListener('click', function(){ state.day = parseInt(goOtherDay.getAttribute('data-goday'),10); render(); });
+  var jumpNow = document.getElementById('jumpNow');
+  if(jumpNow) jumpNow.addEventListener('click', function(){
+    var n = nowInfo();
+    if(!n) return;
+    state.day = n.day; state.cat = 'all'; state.query = '';
+    render();
+    var row = document.getElementById('liveRow');
+    if(row) row.scrollIntoView({behavior:'smooth', block:'center'});
+  });
   var goSched = document.getElementById('goSchedule');
   if(goSched) goSched.addEventListener('click', function(){ state.view='schedule'; render(); });
 
   document.querySelectorAll('[data-open]').forEach(function(el){
-    el.addEventListener('click', function(){ openSheet(el.getAttribute('data-open')); });
+    el.addEventListener('click', function(){
+      lastFocusedTrigger = el;
+      state.sheetStack = [];
+      openSheet(el.getAttribute('data-open'));
+    });
   });
   document.querySelectorAll('[data-save]').forEach(function(el){
     el.addEventListener('click', function(ev){ ev.stopPropagation(); toggleSaved(el.getAttribute('data-save')); });
   });
   document.querySelectorAll('[data-open-speaker]').forEach(function(el){
     el.addEventListener('click', function(){
+      lastFocusedTrigger = el;
+      state.sheetStack = [];
       openSpeakerSheet(el.getAttribute('data-open-speaker'));
     });
   });
@@ -1690,6 +1866,11 @@ document.getElementById('tabs').addEventListener('click', function(ev){
   render();
 });
 document.getElementById('scrim').addEventListener('click', closeSheet);
+document.addEventListener('keydown', function(ev){
+  if(ev.key === 'Escape' && document.getElementById('sheet').classList.contains('show')){
+    closeSheet();
+  }
+});
 
 render();
 
