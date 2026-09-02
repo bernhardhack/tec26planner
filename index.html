@@ -564,6 +564,7 @@
   }
   .speaker{
     display:flex; gap:10px; align-items:center;
+    cursor:pointer;
   }
   .speaker .av{
     flex:none; width:36px;height:36px;
@@ -575,6 +576,31 @@
   }
   .speaker .name{font-weight:700; font-size:14.5px;}
   .speaker .role{font-size:13px; color:var(--ink-muted);}
+
+  /* ---------- Speaker profile sheet ---------- */
+  .speakerhero{
+    display:flex; flex-direction:column; align-items:center; text-align:center;
+    gap:2px; margin:6px 0 16px;
+  }
+  .speakerhero .av-lg{
+    width:152px; height:152px;
+    border-radius:var(--radius-md);
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Barlow Condensed',sans-serif; font-weight:800; font-size:46px;
+    color:#fff; letter-spacing:.02em;
+    object-fit:cover;
+    box-shadow:0 6px 22px rgba(10,9,8,.22);
+    margin-bottom:12px;
+  }
+  .speakerhero .name{
+    font-family:'Barlow Condensed',sans-serif; font-weight:800; font-size:23px;
+    color:var(--heading);
+  }
+  .speakerhero .role{font-size:14px; color:var(--ink-muted); margin-top:2px; max-width:440px;}
+  .speaker-sessions-lbl{
+    font-size:11.5px; color:var(--ink-muted); text-transform:uppercase; letter-spacing:.04em;
+    font-weight:700; margin:0 0 8px;
+  }
   .sheet-actions{
     display:flex; gap:8px; margin-top:14px;
   }
@@ -824,12 +850,13 @@ function speakerColorVar(name){
   return SPEAKER_HUES[h % SPEAKER_HUES.length];
 }
 
-function avatarHTML(name){
+function avatarHTML(name, large){
   var photo = SPEAKER_PHOTOS[name];
+  var cls = large ? 'av av-lg' : 'av';
   if (photo) {
-    return '<img class="av" src="'+photo+'" alt="" loading="lazy">';
+    return '<img class="'+cls+'" src="'+photo+'" alt="" loading="lazy">';
   }
-  return '<div class="av" style="background:var('+speakerColorVar(name)+')">'+initials(name)+'</div>';
+  return '<div class="'+cls+'" style="background:var('+speakerColorVar(name)+')">'+initials(name)+'</div>';
 }
 
 // speaker helper
@@ -1496,6 +1523,14 @@ function tag(t){ return '<span class="tagpill">'+t+'</span>'; }
 
 /* ============================= SUBCARD (workshops) ============================= */
 
+function speakerSessionRow(e){
+  var savedCls = isSaved(e.id) ? ' saved' : '';
+  return '<div class="subcard" data-open="'+e.id+'">'+
+    '<div class="stxt"><span class="num">'+dayLabel(e.day)+' · '+e.start+'–'+e.end+'</span><h4>'+esc(e.title)+'</h4><div class="org">'+esc(e.room)+'</div></div>'+
+    '<button class="star'+savedCls+'" data-save="'+e.id+'" aria-label="Save to My Plan">'+starIcon(isSaved(e.id))+'</button>'+
+  '</div>';
+}
+
 function subcard(w){
   var savedCls = isSaved(w.id) ? ' saved' : '';
   var num = w.id.replace('w','');
@@ -1506,6 +1541,24 @@ function subcard(w){
 }
 
 /* ============================= SHEET (detail view) ============================= */
+
+function openSpeakerSheet(name){
+  var dir = buildSpeakerDirectory();
+  var sp = dir.filter(function(s){return s.name===name;})[0];
+  if(!sp) return;
+  state.sheetId = 'speaker:'+name;
+  var html = '';
+  html += '<div class="sheet-top"><span class="badge" style="--cat-color:var(--charcoal);--cat-soft:var(--charcoal-soft)">Speaker</span><button class="close" id="sheetClose" aria-label="Close">✕</button></div>';
+  html += '<div class="speakerhero">'+avatarHTML(sp.name, true)+'<div class="name">'+esc(sp.name)+'</div><div class="role">'+esc(sp.role)+'</div></div>';
+  html += '<div class="speaker-sessions-lbl">Appears in '+sp.sessions.length+' session'+(sp.sessions.length>1?'s':'')+' — tap to view time, room and add to My Plan</div>';
+  html += '<div class="subgrid">';
+  sp.sessions.forEach(function(e){ html += speakerSessionRow(e); });
+  html += '</div>';
+  document.getElementById('sheetContent').innerHTML = html;
+  document.getElementById('scrim').classList.add('show');
+  document.getElementById('sheet').classList.add('show');
+  wireSheet();
+}
 
 function openSheet(id){
   state.sheetId = id;
@@ -1528,7 +1581,7 @@ function openSheet(id){
   if(e.speakers && e.speakers.length){
     html += '<div class="speakerlist">';
     e.speakers.forEach(function(s){
-      html += '<div class="speaker">'+avatarHTML(s.name)+'<div><div class="name">'+esc(s.name)+'</div><div class="role">'+esc(s.role)+'</div></div></div>';
+      html += '<div class="speaker" data-open-speaker="'+esc(s.name)+'">'+avatarHTML(s.name)+'<div><div class="name">'+esc(s.name)+'</div><div class="role">'+esc(s.role)+'</div></div></div>';
     });
     html += '</div>';
   }
@@ -1572,6 +1625,12 @@ function wireSheet(){
     el.addEventListener('click', function(ev){
       ev.stopPropagation();
       toggleSaved(el.getAttribute('data-save'));
+    });
+  });
+  document.querySelectorAll('#sheetContent [data-open-speaker]').forEach(function(el){
+    el.addEventListener('click', function(ev){
+      ev.stopPropagation();
+      openSpeakerSheet(el.getAttribute('data-open-speaker'));
     });
   });
 }
@@ -1619,10 +1678,7 @@ function wireMain(){
   });
   document.querySelectorAll('[data-open-speaker]').forEach(function(el){
     el.addEventListener('click', function(){
-      var name = el.getAttribute('data-open-speaker');
-      var dir = buildSpeakerDirectory();
-      var sp = dir.filter(function(s){return s.name===name;})[0];
-      if(sp && sp.sessions[0]) openSheet(sp.sessions[0].id);
+      openSpeakerSheet(el.getAttribute('data-open-speaker'));
     });
   });
 }
