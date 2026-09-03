@@ -811,6 +811,58 @@
   .maplegend-row .mlt{font-weight:700; font-size:13.5px; margin-bottom:2px; text-transform:uppercase; letter-spacing:.03em; font-family:'Barlow Condensed',sans-serif;}
   .maplegend-row .mld{font-size:13px; color:var(--ink-muted); line-height:1.55;}
 
+  /* ---------- Live venue map (Leaflet + OSM) ---------- */
+  .mqmap-card{
+    margin:8px 18px 0;
+    background:var(--paper-raised);
+    border:1px solid var(--rule);
+    border-radius:var(--radius-md);
+    overflow:hidden;
+  }
+  #mqMap{
+    height:380px;
+    width:100%;
+    background:var(--paper-sunken);
+    font-family:'Barlow',sans-serif;
+  }
+  #mqMap .leaflet-popup-content-wrapper{ background:var(--paper-raised); color:var(--ink); border-radius:10px; }
+  #mqMap .leaflet-popup-tip{ background:var(--paper-raised); }
+  #mqMap .leaflet-popup-content{ font-family:'Barlow',sans-serif; font-size:13px; margin:10px 12px; line-height:1.5; }
+  #mqMap .leaflet-popup-content b{ font-family:'Barlow Condensed',sans-serif; font-size:14.5px; text-transform:uppercase; letter-spacing:.02em; }
+  #mqMap .leaflet-control-zoom a{ background:var(--paper-raised); color:var(--ink); border-color:var(--rule-strong); }
+  #mqMap .leaflet-control-zoom a:hover{ background:var(--paper-sunken); }
+  #mqMap .leaflet-control-attribution{ background:rgba(255,255,255,.8); font-size:10px; }
+  .mqpin{ display:flex; align-items:center; justify-content:center; border-radius:50%; box-shadow:0 1px 3px rgba(0,0,0,.35); font-size:12px; line-height:1; }
+  .mqmap-note{
+    font-size:12.5px;
+    color:var(--ink-faint);
+    line-height:1.55;
+    padding:10px 14px 4px;
+  }
+  .mqlayers{
+    padding:14px 18px 4px;
+  }
+  .mqlayer-row{
+    display:flex; align-items:center; gap:10px;
+    padding:10px 0;
+    border-bottom:1px solid var(--rule);
+    font-size:13.5px;
+  }
+  .mqlayer-row:last-child{border-bottom:none;}
+  .mqlayer-row input[type=checkbox]{ width:17px;height:17px; accent-color:var(--burgundy); flex:none; }
+  .mqlayer-row .ico{ font-size:15px; width:22px; text-align:center; flex:none; }
+  .mqlayer-row .lbl{ flex:1; font-family:'Barlow',sans-serif; font-weight:500; color:var(--ink); }
+  .mqlayer-row .stat{ font-size:11px; color:var(--ink-faint); font-family:'IBM Plex Mono',monospace; white-space:nowrap; }
+  .mqlayer-row .stat.err{ color:var(--burgundy); }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]) #mqMap .leaflet-tile-pane{ filter:invert(1) hue-rotate(180deg) brightness(.95) contrast(.88) saturate(.85); }
+    :root:not([data-theme="light"]) #mqMap .leaflet-control-attribution{ background:rgba(20,20,20,.8); color:#ccc; }
+    :root:not([data-theme="light"]) #mqMap .leaflet-control-attribution a{ color:#9cf; }
+  }
+  :root[data-theme="dark"] #mqMap .leaflet-tile-pane{ filter:invert(1) hue-rotate(180deg) brightness(.95) contrast(.88) saturate(.85); }
+  :root[data-theme="dark"] #mqMap .leaflet-control-attribution{ background:rgba(20,20,20,.8); color:#ccc; }
+  :root[data-theme="dark"] #mqMap .leaflet-control-attribution a{ color:#9cf; }
+
   /* ---------- Info view ---------- */
   .info{
     padding:14px 18px 40px;
@@ -848,6 +900,8 @@
   }
 </style>
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js" crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
 </head><body><div class="app" id="app">
 
   <header class="top">
@@ -1568,21 +1622,147 @@ function renderSpeakers(){
 
 /* ============================= RENDER: MAP ============================= */
 
+var MQ_CENTER = [48.2033369, 16.3586166];
+var MQ_BBOX = {south:48.2006, west:16.3545, north:48.2061, east:16.3627};
+
+var VENUE_PINS = [
+  {name:'Halle E+G', lat:48.204056, lon:16.359627, color:'--burgundy', glyph:'\u{1F3A4}', desc:'Keynotes, panels, ceremonies, check-in & badge collection. Register with your ticket at the Halle E foyer.'},
+  {name:'Kunsthalle Wien', lat:48.204056, lon:16.358751, color:'--mist', glyph:'\u{1F3A8}', desc:'Free guided artloop tours (“Science meets Arts”) for all participants.'},
+  {name:'mumok', lat:48.203472, lon:16.359493, color:'--mist', glyph:'\u{1F5BC}️', desc:'artloop tours on the museum’s ground floor.'},
+  {name:'quartier21 area', lat:48.204056, lon:16.357673, color:'--slate', glyph:'\u{1F6E0}️', desc:'Parallel workshops and Friday breakfast events — exact rooms are shown on-site and on your badge.'},
+  {name:'Museumsplatz 1', lat:48.202843, lon:16.358617, color:'--ink', glyph:'\u{1F4CD}', desc:'Main entrance — register here to collect your badge.'}
+];
+
+var AMENITY_LAYERS = [
+  {key:'toilets', label:'Toilets', icon:'\u{1F6BB}', color:'#72929C', overpass:['node["amenity"="toilets"]']},
+  {key:'water', label:'Drinking water', icon:'\u{1F6B0}', color:'#4C8BC2', overpass:['node["amenity"="drinking_water"]']},
+  {key:'bikes', label:'Bike parking', icon:'\u{1F6B2}', color:'#4C9A5B', overpass:['node["amenity"="bicycle_parking"]','way["amenity"="bicycle_parking"]']},
+  {key:'transit', label:'Transit', icon:'\u{1F68C}', color:'#7A5CB8', overpass:['node["highway"="bus_stop"]','node["railway"="tram_stop"]','node["station"="subway"]']},
+  {key:'atms', label:'ATMs', icon:'\u{1F3E7}', color:'#B8862E', overpass:['node["amenity"="atm"]']},
+  {key:'pharmacies', label:'Pharmacies', icon:'\u{1F48A}', color:'#C1465A', overpass:['node["amenity"="pharmacy"]']},
+  {key:'rest', label:'Shade / rest', icon:'\u{1F333}', color:'#5C8A5C', overpass:['node["amenity"="bench"]']},
+  {key:'grocery', label:'Grocery stores', icon:'\u{1F6D2}', color:'#B8622E', overpass:['node["shop"="supermarket"]','node["shop"="convenience"]']}
+];
+
+var mqMapInstance = null;
+var mqLayerGroups = {};
+var mqLayerFetched = {};
+
+function buildOverpassUrl(selectors){
+  var b = MQ_BBOX;
+  var bboxStr = '('+b.south+','+b.west+','+b.north+','+b.east+')';
+  var body = selectors.map(function(s){ return s+bboxStr+';'; }).join('');
+  var q = '[out:json][timeout:15];('+body+');out center tags;';
+  return 'https://overpass-api.de/api/interpreter?data='+encodeURIComponent(q);
+}
+
+function mqDivIcon(glyph, color, big){
+  var size = big ? 30 : 24;
+  return L.divIcon({
+    className:'',
+    html:'<div class="mqpin" style="width:'+size+'px;height:'+size+'px;background:'+color+';font-size:'+(big?15:12)+'px;">'+glyph+'</div>',
+    iconSize:[size,size],
+    iconAnchor:[size/2,size/2],
+    popupAnchor:[0,-size/2]
+  });
+}
+
+function initMqMap(){
+  var el = document.getElementById('mqMap');
+  if(!el) return;
+  if(typeof L === 'undefined'){
+    setTimeout(function(){ if(state.view==='map') initMqMap(); }, 300);
+    return;
+  }
+  if(mqMapInstance){ mqMapInstance.remove(); mqMapInstance=null; mqLayerGroups={}; mqLayerFetched={}; }
+
+  var map = L.map(el, {center: MQ_CENTER, zoom: 18, minZoom: 15, maxZoom: 19, scrollWheelZoom: false});
+  mqMapInstance = map;
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    subdomains: 'abc',
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors'
+  }).addTo(map);
+
+  VENUE_PINS.forEach(function(v){
+    var cssColor = getComputedStyle(document.documentElement).getPropertyValue(v.color).trim() || '#5A5A5C';
+    var marker = L.marker([v.lat, v.lon], {icon: mqDivIcon(v.glyph, cssColor, true)}).addTo(map);
+    marker.bindPopup('<b>'+esc(v.name)+'</b><br>'+esc(v.desc));
+  });
+
+  AMENITY_LAYERS.forEach(function(l){
+    mqLayerGroups[l.key] = L.layerGroup();
+  });
+
+  document.querySelectorAll('[data-layer-toggle]').forEach(function(cb){
+    cb.checked = false;
+    cb.addEventListener('change', function(){
+      var key = cb.getAttribute('data-layer-toggle');
+      var layer = AMENITY_LAYERS.filter(function(x){return x.key===key;})[0];
+      var group = mqLayerGroups[key];
+      if(!layer || !group) return;
+      if(cb.checked){
+        map.addLayer(group);
+        if(!mqLayerFetched[key]) loadAmenityLayer(layer, group);
+      } else {
+        map.removeLayer(group);
+      }
+    });
+  });
+}
+
+function setLayerStat(key, text, isErr){
+  var el = document.querySelector('[data-layer-stat="'+key+'"]');
+  if(!el) return;
+  el.textContent = text;
+  el.classList.toggle('err', !!isErr);
+}
+
+function loadAmenityLayer(layer, group){
+  setLayerStat(layer.key, 'loading…');
+  var url = buildOverpassUrl(layer.overpass);
+  fetch(url).then(function(r){
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    return r.json();
+  }).then(function(data){
+    mqLayerFetched[layer.key] = true;
+    var els = (data && data.elements) || [];
+    els.forEach(function(e){
+      var lat = e.lat != null ? e.lat : (e.center ? e.center.lat : null);
+      var lon = e.lon != null ? e.lon : (e.center ? e.center.lon : null);
+      if(lat == null || lon == null) return;
+      var name = (e.tags && (e.tags.name || e.tags.brand)) || layer.label;
+      var marker = L.marker([lat, lon], {icon: mqDivIcon(layer.icon, layer.color, false)});
+      marker.bindPopup('<b>'+esc(layer.label)+'</b><br>'+esc(name));
+      group.addLayer(marker);
+    });
+    setLayerStat(layer.key, els.length ? (els.length+' found') : 'none nearby');
+  }).catch(function(){
+    mqLayerFetched[layer.key] = false;
+    setLayerStat(layer.key, 'couldn’t load — retry', true);
+  });
+}
+
 function renderMap(){
   var html = '<div class="planhead"><h2>Venue Map</h2><p>MuseumsQuartier Wien · Museumsplatz 1, 1070 Wien</p></div>';
 
-  html += '<div class="mapfigwrap">';
-  html += '<figure class="mapfig">';
-  html += mapSVG();
-  html += '<figcaption>Schematic orientation sketch of MuseumsQuartier Wien — not a scaled floor plan. Positions of buildings within the complex are approximate; follow on-site signage for exact rooms.</figcaption>';
-  html += '</figure>';
+  html += '<div class="mqmap-card">';
+  html += '<div id="mqMap" role="img" aria-label="Interactive OpenStreetMap of MuseumsQuartier Wien with pins for the conference venues and optional amenity layers."></div>';
+  html += '<p class="mqmap-note">Live map — drag to pan, pinch or use the +/− buttons to zoom. Pins mark Halle E+G, Kunsthalle Wien, mumok, the quartier21 area and the main entrance; switch on a layer below to load nearby amenities from OpenStreetMap. Needs an internet connection — pins load fresh each visit.</p>';
   html += '</div>';
 
-  html += '<div class="maplegend">';
-  html += mapLegendRow('--burgundy','Halle E+G','Keynotes, panels, ceremonies, check-in & badge collection — register with your ticket at the Halle E foyer.');
-  html += mapLegendRow('--slate','Quartier21 area','Parallel workshops and Friday breakfast events — exact rooms are shown on the on-site signage and your badge.');
-  html += mapLegendRow('--mist','Kunsthalle Wien & mumok','Free guided artloop tours ("Science meets Arts") for all participants — Kunsthalle Wien galleries and the mumok ground floor.');
+  html += '<div class="mqlayers">';
+  html += '<h2>Map layers</h2>';
+  AMENITY_LAYERS.forEach(function(l){
+    html += '<label class="mqlayer-row">'+
+      '<input type="checkbox" data-layer-toggle="'+l.key+'">'+
+      '<span class="ico">'+l.icon+'</span>'+
+      '<span class="lbl">'+l.label+'</span>'+
+      '<span class="stat" data-layer-stat="'+l.key+'"></span>'+
+    '</label>';
+  });
   html += '</div>';
+  html += '<p class="mqmap-note">Toilets note: MQ’s own accessible WC and baby-changing facilities are at the main entrance (per mqw.at) — some general toilets nearby are reached via stairs down. The layer above adds any further public toilets OpenStreetMap has mapped near the grounds.</p>';
 
   html += '<div class="info" style="padding-top:4px;">';
   html += '<h2>Getting there</h2>';
@@ -1601,49 +1781,6 @@ function renderMap(){
   html += '<p>Step-free routes and accessibility services are detailed by the venue directly: Halle E (halleneg.at/lage-und-service) and the wider MuseumsQuartier (mqw.at/de/besuch/barrierefreiheit).</p>';
   html += '</div>';
   return html;
-}
-
-function mapLegendRow(colorVar,title,desc){
-  return '<div class="maplegend-row">'+
-    '<span class="dot" style="background:var('+colorVar+')"></span>'+
-    '<div><div class="mlt">'+title+'</div><div class="mld">'+desc+'</div></div>'+
-  '</div>';
-}
-
-function mapSVG(){
-  return ''+
-  '<svg viewBox="0 0 460 340" role="img" aria-label="Schematic map of MuseumsQuartier Wien showing the main entrance on Museumsplatz leading into the Haupthof courtyard, which connects to Halle E+G (keynotes, panels and check-in), the Quartier21 area (workshops and breakfasts), and Kunsthalle Wien with mumok (artloop art tours).">'+
-    // connecting paths (drawn first, behind nodes)
-    '<g fill="none" stroke="var(--rule-strong)" stroke-width="2" stroke-dasharray="1 7" stroke-linecap="round">'+
-      '<line x1="230" y1="280" x2="230" y2="212"/>'+
-      '<line x1="255" y1="150" x2="330" y2="100"/>'+
-      '<line x1="205" y1="150" x2="130" y2="100"/>'+
-      '<line x1="290" y1="185" x2="335" y2="255"/>'+
-    '</g>'+
-    // entrance node
-    '<rect x="155" y="282" width="150" height="46" rx="8" fill="var(--paper-raised)" stroke="var(--rule-strong)" stroke-width="1.5"/>'+
-    '<text x="230" y="301" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10.5" font-weight="600" fill="var(--ink)">MUSEUMSPLATZ 1</text>'+
-    '<text x="230" y="315" text-anchor="middle" font-family="Barlow, sans-serif" font-size="9.5" fill="var(--ink-muted)">Main entrance</text>'+
-    // hub node
-    '<rect x="155" y="145" width="150" height="60" rx="8" fill="var(--paper-raised)" stroke="var(--ink)" stroke-width="1.5"/>'+
-    '<text x="230" y="171" text-anchor="middle" font-family="Barlow Condensed, sans-serif" text-transform="uppercase" font-weight="700" font-size="15" fill="var(--ink)">HAUPTHOF</text>'+
-    '<text x="230" y="186" text-anchor="middle" font-family="Barlow, sans-serif" font-size="9.5" fill="var(--ink-muted)">Main courtyard</text>'+
-    // Halle E+G node
-    '<rect x="300" y="40" width="150" height="62" rx="8" fill="var(--burgundy-soft)" stroke="var(--burgundy)" stroke-width="1.5"/>'+
-    '<text x="375" y="65" text-anchor="middle" font-family="Barlow Condensed, sans-serif" font-weight="700" font-size="15" fill="var(--ink)">HALLE E+G</text>'+
-    '<text x="375" y="80" text-anchor="middle" font-family="Barlow, sans-serif" font-size="9" fill="var(--ink-muted)">Keynotes · panels</text>'+
-    '<text x="375" y="92" text-anchor="middle" font-family="Barlow, sans-serif" font-size="9" fill="var(--ink-muted)">Check-in &amp; badges</text>'+
-    // Kunsthalle / mumok node
-    '<rect x="10" y="40" width="150" height="62" rx="8" fill="var(--mist-soft)" stroke="var(--mist)" stroke-width="1.5"/>'+
-    '<text x="85" y="61" text-anchor="middle" font-family="Barlow Condensed, sans-serif" font-weight="700" font-size="13.5" fill="var(--ink)">KUNSTHALLE WIEN</text>'+
-    '<text x="85" y="75" text-anchor="middle" font-family="Barlow Condensed, sans-serif" font-weight="700" font-size="13.5" fill="var(--ink)">&amp; MUMOK</text>'+
-    '<text x="85" y="91" text-anchor="middle" font-family="Barlow, sans-serif" font-size="9" fill="var(--ink-muted)">artloop art tours</text>'+
-    // Quartier21 node
-    '<rect x="300" y="252" width="150" height="62" rx="8" fill="var(--slate-soft)" stroke="var(--slate)" stroke-width="1.5"/>'+
-    '<text x="375" y="277" text-anchor="middle" font-family="Barlow Condensed, sans-serif" font-weight="700" font-size="15" fill="var(--ink)">QUARTIER21 AREA</text>'+
-    '<text x="375" y="292" text-anchor="middle" font-family="Barlow, sans-serif" font-size="9" fill="var(--ink-muted)">Workshops</text>'+
-    '<text x="375" y="304" text-anchor="middle" font-family="Barlow, sans-serif" font-size="9" fill="var(--ink-muted)">Breakfast events</text>'+
-  '</svg>';
 }
 
 /* ============================= RENDER: INFO ============================= */
@@ -1918,6 +2055,7 @@ function wireSheet(){
 
 function render(){
   var main = document.getElementById('main');
+  if(state.view !== 'map' && mqMapInstance){ mqMapInstance.remove(); mqMapInstance=null; mqLayerGroups={}; mqLayerFetched={}; }
   if(state.view === 'schedule') main.innerHTML = renderSchedule();
   else if(state.view === 'map') main.innerHTML = renderMap();
   else if(state.view === 'plan') main.innerHTML = renderPlan();
@@ -1931,6 +2069,7 @@ function render(){
   pc.textContent = saved.length ? '('+saved.length+')' : '';
 
   wireMain();
+  if(state.view === 'map') initMqMap();
 }
 
 function wireMain(){
