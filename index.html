@@ -1012,7 +1012,7 @@ function S(name, role){ return {name:name, role:role}; }
 var EVENTS = [
 /* ---------------- DAY 1 — THURSDAY 10 SEPT ---------------- */
 {
-  id:'d1-opening', day:1, start:'10:00', end:'10:15', cat:'ceremony',
+  id:'d1-opening', day:1, start:'09:00', end:'09:15', cat:'ceremony',
   title:'Opening', room:'Halle E Stage · MuseumsQuartier',
   desc:'Welcome to Technology Talks Austria 2026 and introduction to the two-day programme on European technological leadership and resilience.',
   speakers:[
@@ -1023,14 +1023,14 @@ var EVENTS = [
   ]
 },
 {
-  id:'d1-keynote1', day:1, start:'10:15', end:'10:45', cat:'keynote',
+  id:'d1-keynote1', day:1, start:'09:15', end:'09:45', cat:'keynote',
   title:'Introductory Keynote — From Scientific Excellence to Technological Leadership: Europe’s Strategic Opportunity',
   room:'Halle E Stage · MuseumsQuartier',
   desc:'From his vantage point at the intersection of frontier research, industrial collaboration and technology transfer, Jo De Boeck examines how Europe can translate its world-class scientific excellence into technological leadership, industrial competitiveness and long-term resilience.',
   speakers:[ S('Jo De Boeck','EVP & Chief Strategy Officer, imec') ]
 },
 {
-  id:'d1-panel1', day:1, start:'10:45', end:'11:45', cat:'panel',
+  id:'d1-panel1', day:1, start:'09:45', end:'10:45', cat:'panel',
   title:'Panel 1 — Strategic Infrastructures and Resilient Innovation Ecosystems',
   room:'Halle E Stage · MuseumsQuartier · opened by Bundesminister Hanke',
   desc:'How can Europe strengthen competitiveness, technology leadership and resilience? The panel examines the role of resilient physical and digital infrastructure, trustworthy data ecosystems, innovation ecosystems and mission-driven technologies — and how investment, collaboration and governance can accelerate innovation.',
@@ -1041,13 +1041,15 @@ var EVENTS = [
     S('Marie-Helene Ametsreiter','General Partner, Speedinvest')
   ]
 },
-{ id:'d1-break1', day:1, start:'11:45', end:'12:15', cat:'break', title:'Coffee Break', room:'Foyer & Backstage', desc:'30 minutes.', speakers:[] },
+{ id:'d1-break1', day:1, start:'10:45', end:'11:15', cat:'break', title:'Coffee Break', room:'Foyer & Backstage', desc:'30 minutes. Visit the exhibition and connect with fellow attendees.', speakers:[] },
 {
-  id:'d1-panel2', day:1, start:'12:15', end:'13:15', cat:'panel',
+  id:'d1-panel2', day:1, start:'11:15', end:'12:15', cat:'panel',
   title:'Panel 2 — The Way Forward: From Scientific Excellence to Industrial Leadership',
   room:'Halle E Stage · MuseumsQuartier · opened by SC Frauscher / StS Zehetner',
   desc:'Europe’s scientific excellence is a strong foundation, but turning research into globally competitive companies and industrial leadership remains a major challenge. Industry leaders discuss the capabilities, partnerships and framework conditions needed to deploy and scale strategic technologies.',
   speakers:[
+    S('Florian Frauscher','Introduction — Federal Ministry of Economy, Energy and Tourism (BMWET)'),
+    S('Elisabeth Zehetner','Introduction — State Secretary for Energy, Startups and Tourism, BMWET'),
     S('Marcus Wandt','Head of Group Strategy and Technology, Saab'),
     S('Michael Mertin','CEO, AT&S AG'),
     S('Lisa Smith','Co-Founder & Chair of the Board, Prewave — Supply Chain Superintelligence'),
@@ -1055,58 +1057,46 @@ var EVENTS = [
   ]
 },
 {
-  id:'d1-regions', day:1, start:'13:15', end:'13:30', cat:'side',
-  title:'The Power of Regions',
-  room:'Halle E Stage · MuseumsQuartier',
-  desc:'A regional perspective on innovation strength — details and presenters were still marked “TBA” on the official programme page as of this check.',
-  note:'Not yet detailed on the official programme page (status: TBA). Presented with regional partners — earlier programme notes pointed to Styria, which also hosts the lunch break that follows; unconfirmed.',
+  id:'d1-innomarathon', day:1, start:'11:15', end:'13:00', cat:'side',
+  title:'TU Austria Innovationsmarathon', room:'Side stage · MuseumsQuartier',
+  desc:'Student teams from Austria’s technical universities spend 24 hours solving real problem statements set by established companies, then present their solutions live on stage.',
   speakers:[]
 },
 {
-  id:'d1-innomarathon', day:1, start:'13:30', end:'13:45', cat:'side',
-  title:'TU Austria Innovation Marathon — Highlights',
-  room:'Halle E Stage · MuseumsQuartier',
-  desc:'Student teams from Austria’s technical universities spend 24 hours ahead of the conference solving real problem statements set by established companies; this stage segment presents their solutions live.',
+  id:'d1-regions', day:1, start:'11:15', end:'13:00', cat:'side',
+  title:'The Power of Regions (Steiermark)', room:'Side stage · MuseumsQuartier',
+  desc:'A regional perspective on innovation strength, presented with partners from Styria — the same region hosting the lunch break that follows.',
   speakers:[]
 },
-{ id:'d1-lunch', day:1, start:'13:45', end:'15:00', cat:'break', title:'Lunch Break', room:'Foyer & Backstage', desc:'Hosted by Land Steiermark & JOANNEUM RESEARCH.', speakers:[] },
 {
-  id:'d1-gaiax', day:1, start:'12:15', end:'13:45', cat:'side',
-  title:'Meet the Builders: Who Implements Digital Sovereignty?', room:'Gaia-X Hub / Plattform Industrie 4.0 corner',
+  id:'d1-gaiax', day:1, start:'11:15', end:'13:00', cat:'side',
+  title:'Meet the Builders: Who Implements Digital Sovereignty?', room:'Gaia-X Hub / Plattform Industrie 4.0 corner · exhibition area',
   desc:'Gaia-X Hub Austria and Plattform Industrie 4.0 host an exchange on which building blocks Austrian IT companies contribute to digital sovereignty — what already works in practice, and where the hard trade-offs remain.',
-  note:'Carried over from earlier programme notes — not shown on the current public programme page (may be an exhibition-area exchange rather than a timed session). Time is an estimate; check on-site.',
   speakers:[]
 },
 {
-  id:'d1-press1', day:1, start:'12:15', end:'13:45', cat:'press',
+  id:'d1-press1', day:1, start:'11:15', end:'13:00', cat:'press',
   title:'Press Conference', room:'Press Foyer',
   desc:'Accredited press only.',
-  note:'Carried over from earlier programme notes — not shown on the current public programme page. Time is an estimate; check with press office.',
   speakers:[]
 },
+{ id:'d1-lunch', day:1, start:'13:00', end:'14:15', cat:'break', title:'Lunch Break', room:'Foyer & Backstage', desc:'75 minutes. Hosted by Land Steiermark & JOANNEUM RESEARCH.', speakers:[] },
 {
-  id:'d1-workshops1', day:1, start:'15:00', end:'16:30', cat:'workshop',
+  id:'d1-workshops1', day:1, start:'14:00', end:'15:30', cat:'workshop',
   title:'Parallel Workshops — Slot 1 (6 tracks)', room:'Six rooms across MuseumsQuartier',
   desc:'The first of two 90-minute parallel workshop slots, run together with key players from Austria’s research and technology scene.',
   speakers:[], isGroup:true, childIds:['w1','w2','w3','w4','w5','w6']
 },
-{ id:'d1-break2', day:1, start:'16:30', end:'17:00', cat:'break', title:'Coffee Break', room:'Foyer & Backstage', desc:'', speakers:[] },
+{ id:'d1-break2', day:1, start:'15:30', end:'16:00', cat:'break', title:'Coffee Break', room:'Foyer & Backstage', desc:'', speakers:[] },
 {
-  id:'d1-workshops2', day:1, start:'17:00', end:'18:30', cat:'workshop',
+  id:'d1-workshops2', day:1, start:'16:00', end:'17:30', cat:'workshop',
   title:'Parallel Workshops — Slot 2 (6 tracks)', room:'Six rooms across MuseumsQuartier',
   desc:'The second of two 90-minute parallel workshop slots, in the same six rooms as Slot 1.',
   speakers:[], isGroup:true, childIds:['w7','w8','w9','w10','w11','w12']
 },
+{ id:'d1-changeover1', day:1, start:'17:30', end:'17:50', cat:'break', title:'Changeover', room:'', desc:'', speakers:[] },
 {
-  id:'d1-ffg', day:1, start:'18:00', end:'18:50', cat:'side',
-  title:'FFG Beyond Talks @ Technology Talks', room:'Side room',
-  desc:'How do innovative ideas emerge at the intersections of art, business, science and technology — and what makes such collaborations succeed? Registration required, limited participation.',
-  note:'Carried over from earlier programme notes — not shown on the current public programme page. Time is an estimate; registration required, limited participation (link via technology-talks-austria.at).',
-  speakers:[]
-},
-{ id:'d1-changeover1', day:1, start:'18:30', end:'18:50', cat:'break', title:'Changeover', room:'', desc:'', speakers:[] },
-{
-  id:'d1-panel3', day:1, start:'18:50', end:'19:50', cat:'panel',
+  id:'d1-panel3', day:1, start:'17:50', end:'18:50', cat:'panel',
   title:'Panel 3 — Dual-Use Technologies: Innovation, Security and Spillovers',
   room:'Halle E Stage · MuseumsQuartier · opened by NAD Vodosek',
   desc:'As AI, quantum computing, semiconductors, cybersecurity, robotics and space increasingly serve both civilian and military purposes, senior representatives from European institutions, industry, cybersecurity and academia discuss the priorities and partnerships needed to strengthen Europe’s technological leadership alongside security and strategic autonomy.',
@@ -1118,14 +1108,21 @@ var EVENTS = [
   ]
 },
 {
-  id:'d1-ascina', day:1, start:'19:50', end:'20:00', cat:'ceremony',
-  title:'ASciNA Tech Innovation Award',
-  room:'Halle E Stage · MuseumsQuartier',
-  desc:'The newly established ASciNA Tech Innovation Award, supported by TU Wien, honours innovators who turn frontier research into concrete technological solutions with real market and societal impact.',
+  id:'d1-ffg', day:1, start:'18:00', end:'19:00', cat:'side',
+  title:'FFG Beyond Talks @ Technology Talks', room:'Side room',
+  desc:'How do innovative ideas emerge at the intersections of art, business, science and technology — and what makes such collaborations succeed?',
+  note:'Registration required — limited participation (link via technology-talks-austria.at).',
   speakers:[]
 },
 {
-  id:'d1-gettogether', day:1, start:'20:00', end:'22:00', cat:'networking',
+  id:'d1-ascina', day:1, start:'18:50', end:'19:15', cat:'ceremony',
+  title:'ASciNA Tech Innovation Award — Opening Words for the Get Together',
+  room:'Halle E Stage · MuseumsQuartier',
+  desc:'The newly established ASciNA Tech Innovation Award, supported by TU Wien, honours innovators who turn frontier research into concrete technological solutions with real market and societal impact. Followed by opening words for the evening reception.',
+  speakers:[]
+},
+{
+  id:'d1-gettogether', day:1, start:'19:00', end:'22:00', cat:'networking',
   title:'Technology Talks Austria Get Together', room:'Foyer & Backstage · MuseumsQuartier',
   desc:'Evening reception and networking for all conference participants, hosted by Stadt Wien.',
   speakers:[]
@@ -1133,21 +1130,21 @@ var EVENTS = [
 
 /* ---------------- DAY 2 — FRIDAY 11 SEPT ---------------- */
 {
-  id:'d2-breakfast-iv', day:2, start:'09:00', end:'10:30', cat:'networking',
-  title:'Breakfast — Industriellenvereinigung (IV)', room:'Room to be confirmed',
+  id:'d2-breakfast-iv', day:2, start:'08:00', end:'09:30', cat:'networking',
+  title:'Breakfast 1 — Industriellenvereinigung (IV)', room:'Room to be confirmed',
   desc:'Invitation only.',
-  note:'Invitation only — not shown on the current public programme page, which lists three breakfast sessions. Room and exact time are estimates; kept from earlier programme notes.',
+  note:'Invitation only.',
   speakers:[]
 },
 {
-  id:'d2-breakfast-tu', day:2, start:'09:00', end:'10:30', cat:'networking',
-  title:'Breakfast — TU Austria Talente-Frühstück', room:'Arena 21 · MuseumsQuartier',
+  id:'d2-breakfast-tu', day:2, start:'08:00', end:'09:30', cat:'networking',
+  title:'Breakfast 2 — TU Austria Talente-Frühstück', room:'Arena 21 · MuseumsQuartier',
   desc:'Four companies give insights into their working world, current fields of activity and career opportunities — a relaxed setting for young talent to meet company representatives, make contacts and learn about career paths.',
   speakers:[]
 },
 {
-  id:'d2-breakfast-bmlv', day:2, start:'09:00', end:'10:30', cat:'networking',
-  title:'Breakfast — BMLV: Resiliente Energieversorgung und Energieautarkie für Österreichs Zukunft', room:'Ovalhalle · MuseumsQuartier',
+  id:'d2-breakfast-bmlv', day:2, start:'08:00', end:'09:30', cat:'networking',
+  title:'Breakfast 3 — BMLV: Resilient Energy Supply & Energy Autarky', room:'Ovalhalle · MuseumsQuartier',
   desc:'The Federal Ministry of Defence (BMLV), with experts from politics, defence, research, industry and technology, discusses innovative approaches to sustainable and robust energy supply systems for Austria’s future.',
   speakers:[
     S('Jürgen Schlechter','Leiter, Amt für Rüstung und Wehrtechnik (ARWT) — keynote'),
@@ -1161,8 +1158,8 @@ var EVENTS = [
   ]
 },
 {
-  id:'d2-breakfast-ams', day:2, start:'09:00', end:'10:30', cat:'networking',
-  title:'Breakfast — ams OSRAM: How Digital Photonics Unlocks a New Wave of Innovation', room:'Barocke Suite A · MuseumsQuartier',
+  id:'d2-breakfast-ams', day:2, start:'08:00', end:'09:30', cat:'networking',
+  title:'Breakfast 4 — ams OSRAM: How Digital Photonics Unlocks a New Wave of Innovation', room:'Barocke Suite A · MuseumsQuartier',
   desc:'Experts present and discuss innovations in optical connectivity technologies and wearable solutions for health monitoring.',
   speakers:[
     S('Martin Wittmann','ams OSRAM — talk: "From Headlamps to AI Data Centers: The Power of Digital Photonics"'),
@@ -1173,56 +1170,54 @@ var EVENTS = [
   ]
 },
 {
-  id:'d2-press-ehler', day:2, start:'10:30', end:'11:00', cat:'press',
+  id:'d2-press-ehler', day:2, start:'08:00', end:'09:30', cat:'press',
   title:'Press Foyer — Christian Ehler (tbc)', room:'Press Foyer',
   desc:'Accredited press only; participation to be confirmed.',
-  note:'Carried over from earlier programme notes — not shown on the current public programme page. Time is an estimate (ahead of his 11:00 keynote); check with press office.',
   speakers:[]
 },
-{ id:'d2-changeover1', day:2, start:'10:30', end:'11:00', cat:'break', title:'Changeover', room:'', desc:'', speakers:[] },
+{ id:'d2-changeover1', day:2, start:'09:30', end:'10:00', cat:'break', title:'Changeover', room:'', desc:'', speakers:[] },
 {
-  id:'d2-keynote2', day:2, start:'11:00', end:'11:30', cat:'keynote',
+  id:'d2-keynote2', day:2, start:'10:00', end:'10:30', cat:'keynote',
   title:'Keynote — Empowering Europe: Technological Leadership for a Resilient Future',
   room:'Halle E Stage · MuseumsQuartier',
   desc:'Christian Ehler, MEP since 2004 and rapporteur in the Industry, Research and Energy (ITRE) Committee driving the design of the next EU Framework Programme (FP10), shares the European Parliament’s view on the future of research and technology policy and Europe’s position in the world.',
   speakers:[ S('Christian Ehler','MEP, ITRE Rapporteur for FP10') ]
 },
 {
-  id:'d2-panel4', day:2, start:'11:30', end:'12:30', cat:'panel',
+  id:'d2-panel4', day:2, start:'10:30', end:'11:30', cat:'panel',
   title:'Panel 4 — Technological Sovereignty and European Resilience',
   room:'Halle E Stage · MuseumsQuartier',
   desc:'How can Europe strengthen its technological sovereignty by developing, deploying and governing critical technologies in line with its strategic interests and competitiveness? Leaders from politics, research, science and industry discuss how innovation, industrial capacity and skilled talent can strengthen strategic autonomy while reducing critical dependencies and sustaining international cooperation.',
   speakers:[
-    S('Eva-Maria Holzleitner','Federal Minister for Women, Science and Research (BMFWF)'),
+    S('Eva-Maria Holzleitner','Introduction — Federal State Secretary'),
     S('Marie-Agnes Strack-Zimmermann','Chair, Security and Defence Committee, European Parliament'),
     S('Jakob Edler','Director, Fraunhofer ISI Karlsruhe'),
     S('Andrea Schenker-Wicki','Rektorin, Universität Basel'),
-    S('Lars Reger','CTO, NXP')
+    S('Lars Reger','EVP & CTO, NXP Semiconductors')
   ]
 },
 {
-  id:'d2-fallingwalls', day:2, start:'12:30', end:'12:45', cat:'ceremony',
+  id:'d2-fallingwalls', day:2, start:'11:30', end:'12:15', cat:'ceremony',
   title:'Falling Walls Lab Vienna', room:'Halle E Stage · MuseumsQuartier',
-  desc:'The two young researchers who will represent Austria at the renowned international Falling Walls Lab pitch competition in Berlin present the pitches with which they won their qualifying rounds.',
+  desc:'The two young researchers who will represent Austria at the renowned international Falling Walls Lab pitch competition in Berlin present the pitches with which they won their qualifying rounds. Includes a coffee break before Panel 5.',
   speakers:[]
 },
-{ id:'d2-break1', day:2, start:'12:45', end:'13:15', cat:'break', title:'Coffee Break', room:'Foyer & Backstage', desc:'', speakers:[] },
 {
-  id:'d2-panel5', day:2, start:'13:15', end:'14:15', cat:'panel',
-  title:'Panel 5 — EU Frameworks for Innovation, Scaling and Impact',
+  id:'d2-panel5', day:2, start:'12:15', end:'13:15', cat:'panel',
+  title:'Panel 5 — EU Framework Conditions for Innovation, Scaling and Impact',
   room:'Halle E Stage · MuseumsQuartier',
   desc:'On the future of European research and innovation policy, including the relationship between the coming 10th Framework Programme (FP10) and the planned European Competitiveness Fund (ECF): how research can be turned into innovation and impact through the right governance, funding and collaboration — plus the role of innovation ecosystems, technology infrastructures, European partnerships, procurement and regulation.',
   speakers:[
-    S('Elisabeth Zehetner','State Secretary for Energy, Startups and Tourism, BMWET'),
+    S('Elisabeth Zehetner','Introduction — State Secretary for Energy, Startups and Tourism, BMWET'),
     S('Christian Ehler','MEP, ITRE Rapporteur for FP10'),
     S('Tatiana Lopez Garrido','Deputy Head, Unit for Public Investment, DG GROW'),
-    S('Jesús M. Valero','Director General, Tecnalia; President, EARTO'),
+    S('Jesús Valero','Director General, Tecnalia; President, EARTO'),
     S('Sabine Herlitschka','IV / Infineon'),
     S('Jana Kolar','Director, National and University Library; former ESFRI Chair; CEO, CERIC')
   ]
 },
 {
-  id:'d2-panel6', day:2, start:'14:15', end:'15:15', cat:'panel',
+  id:'d2-panel6', day:2, start:'13:15', end:'14:15', cat:'panel',
   title:'Panel 6 — National Innovation Systems: Unlocking Europe’s Innovation Potential',
   room:'Halle E Stage · MuseumsQuartier',
   desc:'How can national research and innovation systems strengthen Europe’s global competitiveness amid growing geopolitical and technological competition? Drawing on innovation leaders Sweden, the Netherlands and Switzerland, the panel examines successful policy measures, governance models and innovation ecosystems, and draws lessons for Austria and Europe.',
@@ -1235,14 +1230,13 @@ var EVENTS = [
   ]
 },
 {
-  id:'d2-press-strack', day:2, start:'11:30', end:'12:30', cat:'press',
+  id:'d2-press-strack', day:2, start:'13:15', end:'14:15', cat:'press',
   title:'Press Foyer — Marie-Agnes Strack-Zimmermann (tbc)', room:'Press Foyer',
   desc:'Accredited press only; participation to be confirmed.',
-  note:'Carried over from earlier programme notes — not shown on the current public programme page. Time is an estimate (alongside Panel 4); check with press office.',
   speakers:[]
 },
 {
-  id:'d2-closing', day:2, start:'15:15', end:'15:30', cat:'ceremony',
+  id:'d2-closing', day:2, start:'14:15', end:'15:00', cat:'ceremony',
   title:'Closing — Farewell', room:'Halle E Stage · MuseumsQuartier',
   desc:'Closing remarks and farewell to close Technology Talks Austria 2026.',
   speakers:[
@@ -1252,62 +1246,62 @@ var EVENTS = [
 },
 
 /* ---------------- WORKSHOPS (12, Day 1 afternoon — two confirmed 90-minute slots) ---------------- */
-{ id:'w1', day:1, start:'15:00', end:'16:30', cat:'workshop', slotTBC:true, lang:'EN',
+{ id:'w1', day:1, start:'14:00', end:'15:30', cat:'workshop', slotTBC:true, lang:'EN',
   title:'Taking the Quantum Leap — How Can Europe Become the Industrial Powerhouse of Quantum Technologies',
   room:'Libelle · Hosted by VFFI & Industriellenvereinigung (IV)',
   desc:'How can Europe turn its outstanding scientific excellence in quantum technologies into globally competitive products and scalable industrial applications, and how can European value chains be strengthened in an increasingly competitive international environment?',
   speakers:[] },
-{ id:'w2', day:1, start:'15:00', end:'16:30', cat:'workshop', slotTBC:true, lang:'DE',
+{ id:'w2', day:1, start:'14:00', end:'15:30', cat:'workshop', slotTBC:true, lang:'DE',
   title:'Mobilität — das starke Rückgrat der österreichischen Wirtschaft!',
   room:'AzW Podium (Architekturzentrum Wien) · Hosted by JOANNEUM RESEARCH',
   desc:'Along research roadmaps, Austria’s mobility sector develops technologies, products and services for the world market, deployed across automotive, rail and aviation — with close cooperation between academic and applied research and industry.',
   speakers:[] },
-{ id:'w3', day:1, start:'15:00', end:'16:30', cat:'workshop', slotTBC:true, lang:'DE',
+{ id:'w3', day:1, start:'14:00', end:'15:30', cat:'workshop', slotTBC:true, lang:'DE',
   title:'Health Data „Quo vadis?“ — Von intelligenter Diagnostik bis hin zu europäischen Datenräumen',
   room:'Leopold Auditorium (Level -1, Leopold Museum) · Hosted by Ludwig Boltzmann Gesellschaft, Boehringer Ingelheim, Siemens Healthineers & Volkshilfe Wien',
   desc:'With the European Health Data Space, health policy is increasingly becoming data policy. Representatives from politics and administration, social insurance, clinical practice, industry and research discuss how Austria can actively shape its implementation.',
   speakers:[] },
-{ id:'w4', day:1, start:'15:00', end:'16:30', cat:'workshop', slotTBC:true, lang:'DE',
+{ id:'w4', day:1, start:'14:00', end:'15:30', cat:'workshop', slotTBC:true, lang:'DE',
   title:'KI-Potenzial in Wirkung verwandeln: Services der AI Factory Austria AI:AT',
   room:'Arena 21 · Hosted by AI Factory Austria AI:AT',
   desc:'AI Factory Austria AI:AT shows how Austria bundles orientation, access to high-performance computing, technical expertise, trustworthy AI, training, business support and ecosystem networking — making the path from first idea to proof of concept visible.',
   speakers:[] },
-{ id:'w5', day:1, start:'15:00', end:'16:30', cat:'workshop', slotTBC:true, lang:'EN',
+{ id:'w5', day:1, start:'14:00', end:'15:30', cat:'workshop', slotTBC:true, lang:'EN',
   title:'The Quest for Scientific Breakthroughs: Creating Attractive Conditions for Excellence',
   room:'Ovalhalle · Hosted by Austrian Science Fund (FWF)',
   desc:'Insights into the latest developments in the Clusters of Excellence — Austria’s largest basic-research networks — spanning quantum technologies, AI, and ageing and health research, and what framework conditions Europe needs for scientific excellence.',
   speakers:[] },
-{ id:'w6', day:1, start:'15:00', end:'16:30', cat:'workshop', slotTBC:true, lang:'DE',
+{ id:'w6', day:1, start:'14:00', end:'15:30', cat:'workshop', slotTBC:true, lang:'DE',
   title:'Speed to Market: Kollaborative Forschung als Innovationsturbo',
   room:'Barocke Suite A · Hosted by BMWET & Austrian Cooperative Research (ACR)',
   desc:'How collaborative access to infrastructure, know-how, data, test environments and partner networks can speed up innovation — because ideas also need to be tested, validated, certified, scaled and brought into value chains faster.',
   speakers:[] },
-{ id:'w7', day:1, start:'17:00', end:'18:30', cat:'workshop', slotTBC:true, lang:'DE / keynote EN',
+{ id:'w7', day:1, start:'16:00', end:'17:30', cat:'workshop', slotTBC:true, lang:'DE / keynote EN',
   title:'Buy European: Strategische Beschaffung als Hebel für mehr Innovation',
   room:'Libelle · Hosted by BMIMI',
   desc:'Austria’s public sector spends roughly €70bn a year on procurement, yet only a fraction is deployed innovatively. The workshop looks at Finland’s best-practice example for turning strategic public procurement into an innovation lever.',
   speakers:[] },
-{ id:'w8', day:1, start:'17:00', end:'18:30', cat:'workshop', slotTBC:true, lang:'EN',
+{ id:'w8', day:1, start:'16:00', end:'17:30', cat:'workshop', slotTBC:true, lang:'EN',
   title:'Science to Sovereignty: Europe in the Global Tech Race',
   room:'AzW Podium (Architekturzentrum Wien) · Hosted by ESA Phi-Lab Austria, TU Wien Spinoff Factory, accent, AWS & AIT',
   desc:'Europe remains structurally dependent on other parts of the world in key technologies, even as new dynamism emerges in space and defence/dual-use, increasingly driven by AI. How deep-tech spin-offs from research institutions turn into sovereign solutions.',
   speakers:[] },
-{ id:'w9', day:1, start:'17:00', end:'18:30', cat:'workshop', slotTBC:true, lang:'DE',
+{ id:'w9', day:1, start:'16:00', end:'17:30', cat:'workshop', slotTBC:true, lang:'DE',
   title:'Hospital@Home: Wenn das Krankenhaus zum Patienten kommt',
   room:'Leopold Auditorium (Level -1, Leopold Museum) · Hosted by Salzburg Research & Innovation Salzburg',
   desc:'New technologies that let patients receive hospital-level care at home — with comparable medical quality, supported by telemedicine, remote monitoring, AI-driven early-warning systems and interprofessional care teams. What framework Austria needs.',
   speakers:[] },
-{ id:'w10', day:1, start:'17:00', end:'18:30', cat:'workshop', slotTBC:true, lang:'EN',
+{ id:'w10', day:1, start:'16:00', end:'17:30', cat:'workshop', slotTBC:true, lang:'EN',
   title:'How Can Technology Serve Democracy? Digital Humanism, Democracy and Peace',
   room:'Arena 21 · Hosted by BMFWF',
   desc:'In a world where algorithms shape opinions, influence decisions and redistribute power, how can digital humanism — a human-centred, values-based approach to designing technology — help safeguard democratic values, protect fundamental rights and de-escalate conflict?',
   speakers:[] },
-{ id:'w11', day:1, start:'17:00', end:'18:30', cat:'workshop', slotTBC:true, lang:'EN',
+{ id:'w11', day:1, start:'16:00', end:'17:30', cat:'workshop', slotTBC:true, lang:'EN',
   title:'Bringing Digital Sovereignty to Businesses at Scale',
   room:'Ovalhalle · Hosted by Wirtschaftskammer Österreich (WKO)',
   desc:'Digital sovereignty is becoming a decisive factor for competitiveness, innovation and resilience. What measures innovation leaders like Sweden are taking, what approach Austria is pursuing, and what experience companies — especially SMEs — report in practice.',
   speakers:[] },
-{ id:'w12', day:1, start:'17:00', end:'18:30', cat:'workshop', slotTBC:true, lang:'EN',
+{ id:'w12', day:1, start:'16:00', end:'17:30', cat:'workshop', slotTBC:true, lang:'EN',
   title:'Quantum Technologies for Dual-Use Applications: From Innovation to Sovereignty',
   room:'Barocke Suite A · Hosted by ÖAW, BMLV & AIT',
   desc:'The strategic importance of quantum technologies for dual-use applications, focused on European innovation and industrial perspectives for technological sovereignty, resilience and security-policy capacity to act.',
