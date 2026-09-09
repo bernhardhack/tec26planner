@@ -43,9 +43,9 @@
     --focus:#1A1A1B;
     --shadow: 0 1px 2px rgba(20,20,20,0.05), 0 4px 14px -6px rgba(20,20,20,0.16);
 
-    --radius-sm:8px;
-    --radius-md:12px;
-    --radius-lg:20px;
+    --radius-sm:4px;
+    --radius-md:6px;
+    --radius-lg:10px;
   }
 
   @media (prefers-color-scheme: dark){
@@ -209,11 +209,11 @@
   nav.tabs{
     display:flex;
     background:var(--nav-bg);
-    overflow-x:auto;
   }
   nav.tabs button{
+    flex:1;
     border:none;background:none;
-    padding:13px 15px;
+    padding:13px 6px;
     font-family:'IBM Plex Sans Condensed', sans-serif;
     font-size:14.5px;
     font-weight:700;
@@ -222,6 +222,7 @@
     color:rgba(255,255,255,0.82);
     cursor:pointer;
     white-space:nowrap;
+    text-align:center;
   }
   nav.tabs button.active{
     color:var(--ink);
@@ -300,34 +301,34 @@
     display:flex;align-items:center;justify-content:center; font-size:11px; padding:0;
   }
 
-  .chiprow{
-    display:flex; gap:6px; overflow-x:auto; padding-bottom:2px;
-    scrollbar-width:none;
-  }
-  .chiprow::-webkit-scrollbar{display:none;}
-  .chip{
+  .catselect{
+    position:relative;
     flex:none;
-    border:1px solid var(--rule-strong);
-    background:var(--paper);
-    color:var(--ink-muted);
-    padding:7px 13px;
-    border-radius:999px;
+    width:132px;
+  }
+  .catselect select{
+    width:100%;
+    appearance:none; -webkit-appearance:none;
+    background:var(--paper-raised);
+    border:1px solid var(--rule);
+    border-radius:var(--radius-md);
+    padding:10px 26px 10px 12px;
     font-family:'IBM Plex Sans Condensed', sans-serif;
     font-size:13px;
     font-weight:700;
     text-transform:uppercase;
     letter-spacing:.03em;
+    color:var(--ink);
     cursor:pointer;
-    display:flex; align-items:center; gap:5px;
-    white-space:nowrap;
   }
-  .chip .dot{width:7px;height:7px;border-radius:50%; flex:none;}
-  .chip.active{
-    background:var(--ink);
-    border-color:var(--ink);
-    color:var(--paper);
+  .catselect::after{
+    content:"";
+    position:absolute; right:11px; top:50%;
+    width:7px;height:7px;
+    border-right:2px solid var(--ink-faint); border-bottom:2px solid var(--ink-faint);
+    transform:translateY(-65%) rotate(45deg);
+    pointer-events:none;
   }
-  .chip.active .dot{outline:1.5px solid var(--paper); outline-offset:1px;}
 
   /* ---------- Timeline ---------- */
   main{
@@ -686,18 +687,28 @@
     letter-spacing:.01em; font-size:23px; margin:0 0 4px; color:var(--heading);
   }
   .planhead p{margin:0; font-size:13.5px; color:var(--ink-muted);}
-  .plan-summary{
-    display:flex; gap:1px; padding:14px 18px 4px;
+  .plan-card{
+    margin:14px 18px 4px;
     border:1px solid var(--rule);
     border-radius:var(--radius-md);
     overflow:hidden;
   }
-  .plan-actions{padding:12px 18px 2px;}
-  .plan-actions .btn{
-    width:auto; flex:none; display:inline-flex; gap:7px;
-    padding:9px 16px;
+  .plan-stats{
+    display:flex; gap:1px; padding:14px 14px 10px;
   }
-  .plan-actions .btn svg{width:15px;height:15px;}
+  .plan-cta{
+    width:100%;
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    border:none; border-top:1px solid var(--rule);
+    background:var(--paper-raised);
+    color:var(--ink);
+    font-family:'IBM Plex Sans Condensed', sans-serif;
+    font-weight:700; text-transform:uppercase; letter-spacing:.04em; font-size:13.5px;
+    padding:13px 14px;
+    cursor:pointer;
+  }
+  .plan-cta svg{width:15px;height:15px;}
+  .plan-cta:active{background:var(--paper-sunken);}
   .sharebox{
     display:flex; gap:8px; margin:14px 0 4px;
   }
@@ -914,7 +925,6 @@
       <button data-view="plan">My Plan <span class="count" id="planCount"></span></button>
       <button data-view="speakers">Speakers</button>
       <button data-view="map">Map</button>
-      <button data-view="info">Info</button>
     </nav>
   </header>
 
@@ -1476,10 +1486,12 @@ function renderSchedule(){
   html += '      <input id="searchInput" type="text" placeholder="Search sessions, speakers, topics…" value="'+esc(state.query)+'">';
   if(state.query) html += '      <button id="searchClear" class="searchclear" aria-label="Clear search">✕</button>';
   html += '    </div>';
-  html += '  </div>';
-  html += '  <div class="chiprow" id="chipRow">';
-  html += chip('all', 'All', null);
-  Object.keys(CATS).forEach(function(c){ html += chip(c, CATS[c].label, c); });
+  html += '    <div class="catselect">';
+  html += '      <select id="catSelect" aria-label="Filter by category">';
+  html += '        <option value="all"'+(state.cat==='all'?' selected':'')+'>All</option>';
+  Object.keys(CATS).forEach(function(c){ html += '<option value="'+c+'"'+(state.cat===c?' selected':'')+'>'+CATS[c].label+'</option>'; });
+  html += '      </select>';
+  html += '    </div>';
   html += '  </div>';
   html += '</div>';
 
@@ -1513,12 +1525,6 @@ function emptyStateHTML(){
   }
   html += '<button id="clearFilters">Clear filters</button></div>';
   return html;
-}
-
-function chip(key,label,cat){
-  var active = state.cat === key;
-  var dot = cat ? '<span class="dot" style="background:var('+catColor(cat)+')"></span>' : '';
-  return '<button class="chip'+(active?' active':'')+'" data-cat="'+key+'">'+dot+label+'</button>';
 }
 
 function eventRow(e){
@@ -1573,15 +1579,16 @@ function renderPlan(){
   var totalSaved = timedSaved.length + workshopSaved.length;
   var html = '';
   html += '<div class="planhead"><h2>My Plan</h2><p>Bookmarked sessions across both days, saved on this device.</p></div>';
-  html += '<div class="plan-summary">';
-  html += '  <div class="stat"><span class="num">'+timedSaved.length+'</span><span class="lbl">Scheduled</span></div>';
-  html += '  <div class="stat"><span class="num">'+workshopSaved.length+'</span><span class="lbl">Workshops</span></div>';
-  html += '  <div class="stat"><span class="num">'+totalSaved+'</span><span class="lbl">Total</span></div>';
-  html += '</div>';
-
+  html += '<div class="plan-card">';
+  html += '  <div class="plan-stats">';
+  html += '    <div class="stat"><span class="num">'+timedSaved.length+'</span><span class="lbl">Scheduled</span></div>';
+  html += '    <div class="stat"><span class="num">'+workshopSaved.length+'</span><span class="lbl">Workshops</span></div>';
+  html += '    <div class="stat"><span class="num">'+totalSaved+'</span><span class="lbl">Total</span></div>';
+  html += '  </div>';
   if(totalSaved > 0){
-    html += '<div class="plan-actions"><button id="sharePlan" class="btn">'+shareIcon()+'Open on another device</button></div>';
+    html += '  <button id="sharePlan" class="plan-cta" type="button">'+shareIcon()+'Open on another device</button>';
   }
+  html += '</div>';
 
   if(timedSaved.length === 0 && workshopSaved.length === 0){
     html += '<div class="empty"><span class="big">☆</span><p>Nothing saved yet.</p><p style="margin-top:-6px">Tap the star on any session in the Schedule to add it here.</p><button id="goSchedule">Browse the schedule</button></div>';
@@ -1797,14 +1804,7 @@ function renderMap(){
 
   html += '<h2>Accessibility</h2>';
   html += '<p>Step-free routes and accessibility services are detailed by the venue directly: Halle E (halleneg.at/lage-und-service) and the wider MuseumsQuartier (mqw.at/de/besuch/barrierefreiheit).</p>';
-  html += '</div>';
-  return html;
-}
 
-/* ============================= RENDER: INFO ============================= */
-
-function renderInfo(){
-  var html = '<div class="info">';
   html += '<h2>About</h2>';
   html += '<p>Europe stands at the start of a decade in which technological leadership, economic competitiveness, security and resilience can no longer be considered separately. <strong>Technology Talks Austria 2026</strong> — <em>“Empowering Europe: Technological Leadership for a Resilient Future”</em> — asks how Europe can turn scientific excellence into technological leadership, industrial strength, strategic autonomy and long-term resilience.</p>';
   html += '<p>Austria’s leading research and technology conference runs back-to-back with the FFG Forum, across two keynotes, six plenary panels, twelve workshops, and a full programme of side events, breakfasts and networking.</p>';
@@ -2078,7 +2078,6 @@ function render(){
   else if(state.view === 'map') main.innerHTML = renderMap();
   else if(state.view === 'plan') main.innerHTML = renderPlan();
   else if(state.view === 'speakers') main.innerHTML = renderSpeakers();
-  else if(state.view === 'info') main.innerHTML = renderInfo();
 
   document.querySelectorAll('nav.tabs button').forEach(function(b){
     b.classList.toggle('active', b.getAttribute('data-view') === state.view);
@@ -2094,9 +2093,10 @@ function wireMain(){
   document.querySelectorAll('[data-day]').forEach(function(b){
     b.addEventListener('click', function(){ state.day = parseInt(b.getAttribute('data-day'),10); render(); });
   });
-  document.querySelectorAll('[data-cat]').forEach(function(b){
-    b.addEventListener('click', function(){ state.cat = b.getAttribute('data-cat'); render(); });
-  });
+  var catSelect = document.getElementById('catSelect');
+  if(catSelect){
+    catSelect.addEventListener('change', function(){ state.cat = catSelect.value; render(); });
+  }
   var search = document.getElementById('searchInput');
   if(search){
     search.addEventListener('input', function(){ state.query = search.value; render(); search.focus(); search.setSelectionRange(search.value.length, search.value.length); });
