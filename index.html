@@ -927,7 +927,7 @@
       </button>
     </div>
     <nav class="tabs" id="tabs">
-      <button data-view="schedule">Schedule</button>
+      <button data-view="schedule">Program</button>
       <button data-view="plan">My Plan <span class="count" id="planCount"></span></button>
       <button data-view="speakers">Speakers</button>
       <button data-view="map">Map</button>
@@ -1597,7 +1597,7 @@ function renderPlan(){
   html += '</div>';
 
   if(timedSaved.length === 0 && workshopSaved.length === 0){
-    html += '<div class="empty"><span class="big">☆</span><p>Nothing saved yet.</p><p style="margin-top:-6px">Tap the star on any session in the Schedule to add it here.</p><button id="goSchedule">Browse the schedule</button></div>';
+    html += '<div class="empty"><span class="big">☆</span><p>Nothing saved yet.</p><p style="margin-top:-6px">Tap the star on any session in the Program to add it here.</p><button id="goSchedule">Browse the program</button></div>';
     return html;
   }
 
@@ -1660,8 +1660,7 @@ var VENUE_PINS = [
   {name:'Kunsthalle Wien', lat:48.204056, lon:16.358751, color:'--mist', glyph:'\u{1F3A8}', desc:'Free guided artloop tours (“Science meets Arts”) for all participants.'},
   {name:'mumok', lat:48.203472, lon:16.359493, color:'--mist', glyph:'\u{1F5BC}️', desc:'artloop tours on the museum’s ground floor.'},
   {name:'quartier21 area', lat:48.204056, lon:16.357673, color:'--slate', glyph:'\u{1F6E0}️', desc:'Parallel workshops and Friday breakfast events — exact rooms are shown on-site and on your badge.'},
-  {name:'Leopold Museum', lat:48.203472, lon:16.357755, color:'--slate', glyph:'\u{1F3DB}️', desc:'Basement Auditorium (Level -1) hosts two Day 1 workshops: Health Data (14:00) and Hospital@Home (16:00).'},
-  {name:'Museumsplatz 1', lat:48.202843, lon:16.358617, color:'--ink', glyph:'\u{1F4CD}', desc:'Main entrance — register here to collect your badge.'}
+  {name:'Leopold Museum', lat:48.203472, lon:16.357755, color:'--slate', glyph:'\u{1F3DB}️', desc:'Basement Auditorium (Level -1) hosts two Day 1 workshops: Health Data (14:00) and Hospital@Home (16:00).'}
 ];
 
 var AMENITY_LAYERS = [
