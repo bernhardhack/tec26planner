@@ -1660,7 +1660,6 @@ var MQ_CENTER = [48.2033369, 16.3586166];
 var MQ_BBOX = {south:48.2006, west:16.3545, north:48.2061, east:16.3627};
 
 var VENUE_PINS = [
-  {name:'Halle E+G', lat:48.204056, lon:16.359627, color:'--burgundy', glyph:'\u{1F3A4}', desc:'Keynotes, panels, ceremonies, check-in & badge collection. Register with your ticket at the Halle E foyer.'},
   {name:'Kunsthalle Wien', lat:48.204056, lon:16.358751, color:'--mist', glyph:'\u{1F3A8}', desc:'Free guided artloop tours (“Science meets Arts”) for all participants.'},
   {name:'mumok', lat:48.203472, lon:16.359493, color:'--mist', glyph:'\u{1F5BC}️', desc:'artloop tours on the museum’s ground floor.'},
   {name:'quartier21 area', lat:48.204056, lon:16.357673, color:'--slate', glyph:'\u{1F6E0}️', desc:'Parallel workshops and Friday breakfast events — exact rooms are shown on-site and on your badge.'},
@@ -1782,7 +1781,7 @@ function renderMap(){
 
   html += '<div class="mqmap-card">';
   html += '<div id="mqMap" role="img" aria-label="Interactive OpenStreetMap of MuseumsQuartier Wien with pins for the conference venues and optional amenity layers."></div>';
-  html += '<p class="mqmap-note">Live map — drag to pan, pinch or use the +/− buttons to zoom. Pins mark Halle E+G, Kunsthalle Wien, mumok, the quartier21 area and the main entrance; switch on a layer below to load nearby amenities from OpenStreetMap. Needs an internet connection — pins load fresh each visit.</p>';
+  html += '<p class="mqmap-note">Live map — drag to pan, pinch or use the +/− buttons to zoom. Pins mark Kunsthalle Wien, mumok, the quartier21 area and the main entrance; switch on a layer below to load nearby amenities from OpenStreetMap. Needs an internet connection — pins load fresh each visit.</p>';
   html += '</div>';
 
   html += '<div class="mqlayers">';
