@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-title" content="TEC26">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
 
   :root{
     --paper:#FFFFFF;
@@ -122,7 +122,7 @@
   body{
     background:var(--paper);
     color:var(--ink);
-    font-family:'Barlow', ui-sans-serif, system-ui, sans-serif;
+    font-family:'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
     -webkit-font-smoothing:antialiased;
     font-size:16px;
     line-height:1.55;
@@ -132,7 +132,7 @@
   button{font-family:inherit;}
   :focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
   .mono{font-family:'IBM Plex Mono', ui-monospace, monospace; font-feature-settings:'tnum' 1; font-variant-numeric:tabular-nums;}
-  .display{font-family:'Barlow Condensed', ui-sans-serif, system-ui, sans-serif;}
+  .display{font-family:'IBM Plex Sans Condensed', ui-sans-serif, system-ui, sans-serif;}
 
   img{max-width:100%;}
   [hidden]{display:none!important;}
@@ -169,7 +169,7 @@
     position:relative;
   }
   .wordmark .tag{
-    font-family:'Barlow', sans-serif;
+    font-family:'IBM Plex Sans', sans-serif;
     font-size:11px;
     letter-spacing:.1em;
     text-transform:uppercase;
@@ -177,7 +177,7 @@
     font-weight:700;
   }
   .wordmark h1{
-    font-family:'Barlow Condensed', sans-serif;
+    font-family:'IBM Plex Sans Condensed', sans-serif;
     font-weight:800;
     text-transform:uppercase;
     font-size:30px;
@@ -214,7 +214,7 @@
   nav.tabs button{
     border:none;background:none;
     padding:13px 15px;
-    font-family:'Barlow Condensed', sans-serif;
+    font-family:'IBM Plex Sans Condensed', sans-serif;
     font-size:14.5px;
     font-weight:700;
     text-transform:uppercase;
@@ -261,7 +261,7 @@
     border:none;
     background:var(--paper-raised);
     padding:10px 6px;
-    font-family:'Barlow Condensed', sans-serif;
+    font-family:'IBM Plex Sans Condensed', sans-serif;
     font-weight:700;
     letter-spacing:.03em;
     font-size:14.5px;
@@ -271,7 +271,7 @@
     text-align:center;
     line-height:1.25;
   }
-  .daybar button .d{display:block; font-size:11px; font-weight:500; opacity:.75; text-transform:none; font-family:'Barlow',sans-serif; letter-spacing:0;}
+  .daybar button .d{display:block; font-size:11px; font-weight:500; opacity:.75; text-transform:none; font-family:'IBM Plex Sans',sans-serif; letter-spacing:0;}
   .daybar button.active{
     background:var(--burgundy);
     color:#fff;
@@ -312,7 +312,7 @@
     color:var(--ink-muted);
     padding:7px 13px;
     border-radius:999px;
-    font-family:'Barlow Condensed', sans-serif;
+    font-family:'IBM Plex Sans Condensed', sans-serif;
     font-size:13px;
     font-weight:700;
     text-transform:uppercase;
@@ -339,7 +339,7 @@
     display:flex; align-items:center; justify-content:space-between; gap:10px;
   }
   .daylabel{
-    font-family:'Barlow Condensed', sans-serif;
+    font-family:'IBM Plex Sans Condensed', sans-serif;
     font-weight:700;
     color:var(--heading);
     text-transform:uppercase;
@@ -353,7 +353,7 @@
     color:var(--burgundy);
     border-radius:999px;
     padding:5px 12px;
-    font-family:'Barlow Condensed', sans-serif;
+    font-family:'IBM Plex Sans Condensed', sans-serif;
     font-weight:700;
     text-transform:uppercase;
     letter-spacing:.03em;
@@ -376,7 +376,7 @@
     background:var(--paper);
     border-radius:var(--radius-sm);
     padding:10px 18px;
-    font-family:'Barlow Condensed', sans-serif;
+    font-family:'IBM Plex Sans Condensed', sans-serif;
     font-weight:700;
     text-transform:uppercase;
     letter-spacing:.03em;
@@ -387,10 +387,7 @@
   }
 
   .row{
-    display:flex;
     padding:2px 14px;
-    gap:10px;
-    align-items:stretch;
   }
   .row.live .card{
     box-shadow:0 0 0 1.5px var(--burgundy);
@@ -400,37 +397,25 @@
     color:#fff !important;
     border-color:var(--burgundy) !important;
   }
-  .rail{
-    flex:none;
-    width:54px;
-    padding-top:14px;
-    text-align:right;
-    font-family:'IBM Plex Mono',monospace;
-    font-size:12.5px;
-    color:var(--ink-faint);
-    font-weight:500;
-  }
-  .rail .end{display:block; opacity:.65; font-size:10.5px; margin-top:1px;}
 
   .card{
-    flex:1;
-    margin:6px 0;
+    margin:8px 0;
     background:var(--paper);
     border:1px solid var(--rule);
     border-top:3px solid var(--cat-color, var(--slate));
     border-radius:var(--radius-md);
-    padding:13px 14px 13px 14px;
+    padding:14px 16px;
     cursor:pointer;
     position:relative;
     display:flex;
     flex-direction:column;
-    gap:6px;
+    gap:7px;
   }
   .card .toprow{
     display:flex; justify-content:space-between; align-items:flex-start; gap:8px;
   }
   .card h3{
-    font-family:'Barlow Condensed', sans-serif;
+    font-family:'IBM Plex Sans Condensed', sans-serif;
     font-weight:700;
     font-size:18px;
     letter-spacing:0;
@@ -439,6 +424,15 @@
     text-wrap:balance;
     color:var(--ink);
   }
+  .card .metarow{
+    display:flex; flex-wrap:wrap; align-items:center; gap:4px 14px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12.5px;
+    color:var(--ink-faint);
+    font-weight:500;
+  }
+  .card .metarow .metaitem{display:inline-flex; align-items:center; gap:5px;}
+  .card .metarow .metaitem svg{width:13px;height:13px;flex:none;opacity:.75;}
   .card .meta{
     font-size:13.5px;
     color:var(--ink-muted);
@@ -448,15 +442,15 @@
     display:flex; gap:6px; align-items:center; margin-top:2px; flex-wrap:wrap;
   }
   .badge{
-    font-family:'Barlow Condensed', sans-serif;
+    font-family:'IBM Plex Sans Condensed', sans-serif;
     font-size:11.5px;
-    font-weight:700;
-    letter-spacing:.05em;
+    font-weight:600;
+    letter-spacing:.04em;
     text-transform:uppercase;
     padding:3px 9px;
     border-radius:var(--radius-sm);
-    background:var(--cat-color, var(--slate));
-    color:#fff;
+    background:var(--cat-soft, var(--slate-soft));
+    color:var(--cat-color, var(--slate));
   }
   .badge.outline{
     background:transparent;
@@ -515,7 +509,7 @@
     font-size:14.5px;
     margin:2px 0 2px;
     font-weight:700;
-    font-family:'Barlow',sans-serif;
+    font-family:'IBM Plex Sans',sans-serif;
     line-height:1.35;
   }
   .subcard .org{font-size:12.5px; color:var(--ink-muted);}
@@ -561,7 +555,7 @@
   .backlink{
     display:flex; align-items:center; gap:4px;
     border:none; background:none; padding:6px 0 0; margin:0;
-    font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:12.5px;
+    font-family:'IBM Plex Sans Condensed',sans-serif; font-weight:700; font-size:12.5px;
     text-transform:uppercase; letter-spacing:.03em;
     color:var(--ink-muted); cursor:pointer;
   }
@@ -579,7 +573,7 @@
     cursor:pointer; color:var(--ink-muted); flex:none;
   }
   .sheet h2{
-    font-family:'Barlow Condensed', sans-serif;
+    font-family:'IBM Plex Sans Condensed', sans-serif;
     font-weight:700;
     font-size:25px;
     line-height:1.22;
@@ -622,7 +616,7 @@
     flex:none; width:36px;height:36px;
     border-radius:var(--radius-sm);
     display:flex;align-items:center;justify-content:center;
-    font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:13.5px;
+    font-family:'IBM Plex Sans Condensed',sans-serif; font-weight:700; font-size:13.5px;
     color:#fff; letter-spacing:.02em;
     object-fit:cover;
   }
@@ -638,14 +632,14 @@
     width:152px; height:152px;
     border-radius:var(--radius-md);
     display:flex;align-items:center;justify-content:center;
-    font-family:'Barlow Condensed',sans-serif; font-weight:800; font-size:46px;
+    font-family:'IBM Plex Sans Condensed',sans-serif; font-weight:800; font-size:46px;
     color:#fff; letter-spacing:.02em;
     object-fit:cover;
     box-shadow:0 6px 22px rgba(10,9,8,.22);
     margin-bottom:12px;
   }
   .speakerhero .name{
-    font-family:'Barlow Condensed',sans-serif; font-weight:800; font-size:23px;
+    font-family:'IBM Plex Sans Condensed',sans-serif; font-weight:800; font-size:23px;
     color:var(--heading);
   }
   .speakerhero .role{font-size:14px; color:var(--ink-muted); margin-top:2px; max-width:440px;}
@@ -660,7 +654,7 @@
     flex:1;
     padding:13px 14px;
     border-radius:var(--radius-sm);
-    font-family:'Barlow Condensed', sans-serif;
+    font-family:'IBM Plex Sans Condensed', sans-serif;
     font-weight:700;
     text-transform:uppercase;
     letter-spacing:.04em;
@@ -688,7 +682,7 @@
     padding:18px 18px 4px;
   }
   .planhead h2{
-    font-family:'Barlow Condensed',sans-serif; font-weight:800; text-transform:uppercase;
+    font-family:'IBM Plex Sans Condensed',sans-serif; font-weight:800; text-transform:uppercase;
     letter-spacing:.01em; font-size:23px; margin:0 0 4px; color:var(--heading);
   }
   .planhead p{margin:0; font-size:13.5px; color:var(--ink-muted);}
@@ -765,11 +759,11 @@
     flex:none; width:54px;height:54px;
     border-radius:var(--radius-sm);
     display:flex;align-items:center;justify-content:center;
-    font-family:'Barlow Condensed',sans-serif; font-weight:800; font-size:19px;
+    font-family:'IBM Plex Sans Condensed',sans-serif; font-weight:800; font-size:19px;
     color:#fff; letter-spacing:.02em;
     object-fit:cover;
   }
-  .sp-row .name{font-weight:700; font-size:16px; font-family:'Barlow',sans-serif;}
+  .sp-row .name{font-weight:700; font-size:16px; font-family:'IBM Plex Sans',sans-serif;}
   .sp-row .role{font-size:13.5px; color:var(--ink-muted); margin-top:1px;}
   .sp-row .sessions{font-size:11.5px; color:var(--heading); margin-top:5px; font-weight:700; text-transform:uppercase; letter-spacing:.03em; line-height:1.4;}
 
@@ -808,7 +802,7 @@
   .maplegend-row .dot{
     width:11px;height:11px;border-radius:50%;flex:none;margin-top:4px;
   }
-  .maplegend-row .mlt{font-weight:700; font-size:13.5px; margin-bottom:2px; text-transform:uppercase; letter-spacing:.03em; font-family:'Barlow Condensed',sans-serif;}
+  .maplegend-row .mlt{font-weight:700; font-size:13.5px; margin-bottom:2px; text-transform:uppercase; letter-spacing:.03em; font-family:'IBM Plex Sans Condensed',sans-serif;}
   .maplegend-row .mld{font-size:13px; color:var(--ink-muted); line-height:1.55;}
 
   /* ---------- Live venue map (Leaflet + OSM) ---------- */
@@ -823,12 +817,12 @@
     height:380px;
     width:100%;
     background:var(--paper-sunken);
-    font-family:'Barlow',sans-serif;
+    font-family:'IBM Plex Sans',sans-serif;
   }
   #mqMap .leaflet-popup-content-wrapper{ background:var(--paper-raised); color:var(--ink); border-radius:10px; }
   #mqMap .leaflet-popup-tip{ background:var(--paper-raised); }
-  #mqMap .leaflet-popup-content{ font-family:'Barlow',sans-serif; font-size:13px; margin:10px 12px; line-height:1.5; }
-  #mqMap .leaflet-popup-content b{ font-family:'Barlow Condensed',sans-serif; font-size:14.5px; text-transform:uppercase; letter-spacing:.02em; }
+  #mqMap .leaflet-popup-content{ font-family:'IBM Plex Sans',sans-serif; font-size:13px; margin:10px 12px; line-height:1.5; }
+  #mqMap .leaflet-popup-content b{ font-family:'IBM Plex Sans Condensed',sans-serif; font-size:14.5px; text-transform:uppercase; letter-spacing:.02em; }
   #mqMap .leaflet-control-zoom a{ background:var(--paper-raised); color:var(--ink); border-color:var(--rule-strong); }
   #mqMap .leaflet-control-zoom a:hover{ background:var(--paper-sunken); }
   #mqMap .leaflet-control-attribution{ background:rgba(255,255,255,.8); font-size:10px; }
@@ -851,7 +845,7 @@
   .mqlayer-row:last-child{border-bottom:none;}
   .mqlayer-row input[type=checkbox]{ width:17px;height:17px; accent-color:var(--burgundy); flex:none; }
   .mqlayer-row .ico{ font-size:15px; width:22px; text-align:center; flex:none; }
-  .mqlayer-row .lbl{ flex:1; font-family:'Barlow',sans-serif; font-weight:500; color:var(--ink); }
+  .mqlayer-row .lbl{ flex:1; font-family:'IBM Plex Sans',sans-serif; font-weight:500; color:var(--ink); }
   .mqlayer-row .stat{ font-size:11px; color:var(--ink-faint); font-family:'IBM Plex Mono',monospace; white-space:nowrap; }
   .mqlayer-row .stat.err{ color:var(--burgundy); }
   @media (prefers-color-scheme: dark){
@@ -868,7 +862,7 @@
     padding:14px 18px 40px;
   }
   .info h2{
-    font-family:'Barlow Condensed',sans-serif; font-size:19px; font-weight:700; text-transform:uppercase; letter-spacing:.02em; margin:24px 0 8px; color:var(--heading);
+    font-family:'IBM Plex Sans Condensed',sans-serif; font-size:19px; font-weight:700; text-transform:uppercase; letter-spacing:.02em; margin:24px 0 8px; color:var(--heading);
   }
   .info h2:first-child{margin-top:4px;}
   .info p{font-size:14.5px; line-height:1.68; color:var(--ink); margin:0 0 10px;}
@@ -1529,18 +1523,20 @@ function chip(key,label,cat){
 
 function eventRow(e){
   var color = catColor(e.cat), soft = catSoft(e.cat);
-  var sub = e.room || (e.speakers[0] ? e.speakers[0].role : '');
-  var speakerLine = e.speakers && e.speakers.length ? e.speakers.map(function(s){return s.name;}).join(', ') : sub;
+  var speakerLine = e.speakers && e.speakers.length ? e.speakers.map(function(s){return s.name;}).join(', ') : '';
   var savedCls = isSaved(e.id) ? ' saved' : '';
   var live = isLiveNow(e);
   var html = '<div class="row'+(live?' live':'')+'"'+(live?' id="liveRow"':'')+'>';
-  html += '  <div class="rail">'+e.start+'<span class="end">'+e.end+'</span></div>';
   html += '  <div class="card" style="--cat-color:var('+color+');--cat-soft:var('+soft+')" data-open="'+e.id+'">';
   html += '    <div class="toprow">';
   html += '      <h3>'+esc(e.title)+'</h3>';
   if(!e.isGroup){
     html += '      <button class="star'+savedCls+'" data-save="'+e.id+'" aria-label="Save to My Plan">'+starIcon(isSaved(e.id))+'</button>';
   }
+  html += '    </div>';
+  html += '    <div class="metarow">';
+  html += '      <span class="metaitem">'+clockIcon()+e.start+'–'+e.end+'</span>';
+  if(e.room) html += '      <span class="metaitem">'+pinIcon()+esc(e.room)+'</span>';
   html += '    </div>';
   if(speakerLine) html += '    <div class="meta">'+esc(speakerLine)+'</div>';
   html += '    <div class="tagsrow">'+(live?'<span class="badge live-badge">● Now</span>':'')+'<span class="badge" style="--cat-color:var('+color+');--cat-soft:var('+soft+')">'+catLabel(e.cat)+'</span>';
@@ -1556,6 +1552,12 @@ function starIcon(filled){
 }
 function shareIcon(){
   return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 10.5l6.8-3.9M8.6 13.5l6.8 3.9"/></svg>';
+}
+function clockIcon(){
+  return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 2"/></svg>';
+}
+function pinIcon(){
+  return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.2 7-11.5A7 7 0 105 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.3"/></svg>';
 }
 
 /* ============================= RENDER: MY PLAN ============================= */
@@ -1578,7 +1580,7 @@ function renderPlan(){
   html += '</div>';
 
   if(totalSaved > 0){
-    html += '<div class="plan-actions"><button id="sharePlan" class="btn">'+shareIcon()+'Share My Plan</button></div>';
+    html += '<div class="plan-actions"><button id="sharePlan" class="btn">'+shareIcon()+'Open on another device</button></div>';
   }
 
   if(timedSaved.length === 0 && workshopSaved.length === 0){
@@ -1884,11 +1886,11 @@ function openShareSheet(){
   var url = location.origin + location.pathname + '#plan=' + saved.join(',');
   var count = saved.length;
   var html = '';
-  html += '<div class="sheet-top"><span class="badge" style="--cat-color:var(--charcoal);--cat-soft:var(--charcoal-soft)">Share</span><button class="close" id="sheetClose" aria-label="Close">✕</button></div>';
-  html += '<h2>Share My Plan</h2>';
-  html += '<div class="desc"><p>Send this link to a colleague, or scan it on another phone — opening it offers to add these '+count+' saved session'+(count>1?'s':'')+' to whoever opens it. Nothing is uploaded; the link just carries the list.</p></div>';
+  html += '<div class="sheet-top"><span class="badge" style="--cat-color:var(--charcoal);--cat-soft:var(--charcoal-soft)">Devices</span><button class="close" id="sheetClose" aria-label="Close">✕</button></div>';
+  html += '<h2>Open on another device</h2>';
+  html += '<div class="desc"><p>Your My Plan list — '+count+' saved session'+(count>1?'s':'')+' — stays on this device only. Scan the code or copy the link below on another phone or computer to open it there too.</p></div>';
   html += '<div class="sharebox"><input id="shareUrlInput" type="text" readonly value="'+esc(url)+'"><button id="copyLink" class="btn primary" type="button">Copy link</button></div>';
-  html += '<div class="qrwrap"><div id="qrHolder"></div><div class="qrhint">Scan to open on another phone</div></div>';
+  html += '<div class="qrwrap"><div id="qrHolder"></div><div class="qrhint">Scan with another phone’s camera</div></div>';
   document.getElementById('sheetContent').innerHTML = html;
   document.getElementById('scrim').classList.add('show');
   document.getElementById('sheet').classList.add('show');
