@@ -201,6 +201,13 @@
     margin-top:2px;
     font-weight:500;
   }
+  .wordmark .buildtag{
+    font-size:10px;
+    color:rgba(255,255,255,0.45);
+    margin-top:3px;
+    font-family:'IBM Plex Mono', monospace;
+    letter-spacing:.02em;
+  }
   .theme-toggle{
     border:1px solid rgba(255,255,255,0.35);
     background:rgba(255,255,255,0.08);
@@ -932,6 +939,7 @@
         <span class="tag">Technology Talks Austria 2026</span>
         <h1>TEC26 Planner</h1>
         <span class="sub">10–11 Sept · MuseumsQuartier Wien</span>
+        <span class="buildtag" id="buildTag"></span>
       </div>
       <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" title="Toggle light / dark">
         <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></svg>
@@ -968,6 +976,8 @@
 "use strict";
 
 /* ============================= DATA ============================= */
+
+var BUILD_DATE = '9 Sep 2026';
 
 var CATS = {
   keynote:   {label:'Keynote',    color:'--burgundy', soft:'--burgundy-soft'},
@@ -1792,7 +1802,7 @@ function renderMap(){
   html += '<p>AIT’s new art programme <strong>artloop</strong> offers participants short guided tours in the Kunsthalle Wien (free entry for all Technology Talks participants) and on the ground floor of mumok, curated by Klaus Speidel.</p>';
 
   html += '<h2>About this planner</h2>';
-  html += '<p>Unofficial personal planning tool built from the AIT programme notes and schedule grid for Technology Talks Austria 2026. Bookmarks are saved locally in this browser only — nothing is shared or synced. Times follow the official schedule grid; a few overlapping side events show approximate windows where the source material didn’t give exact minutes.</p>';
+  html += '<p>Unofficial personal planning tool built from the AIT programme notes and schedule grid for Technology Talks Austria 2026. Bookmarks are saved locally in this browser only — nothing is shared or synced. Times follow the official schedule grid; a few overlapping side events show approximate windows where the source material didn’t give exact minutes. Last updated '+BUILD_DATE+'.</p>';
   html += '</div>';
   return html;
 }
@@ -2124,6 +2134,7 @@ document.addEventListener('keydown', function(ev){
 
 render();
 checkIncomingPlan();
+document.getElementById('buildTag').textContent = 'Updated ' + BUILD_DATE;
 
 })();
 </script>
