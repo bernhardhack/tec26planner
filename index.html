@@ -434,13 +434,14 @@
     color:var(--ink);
   }
   .card .metarow{
-    display:flex; flex-wrap:wrap; align-items:center; gap:4px 14px;
+    display:flex; flex-direction:column; align-items:flex-start; gap:4px;
     font-family:'IBM Plex Mono', monospace;
     font-size:12.5px;
     color:var(--ink-faint);
     font-weight:500;
   }
   .card .metarow .metaitem{display:inline-flex; align-items:center; gap:5px;}
+  .card .metarow .metaitem.time{font-weight:700; color:var(--ink-muted);}
   .card .metarow .metaitem svg{width:13px;height:13px;flex:none;opacity:.75;}
   .card .meta{
     font-size:13.5px;
@@ -1550,8 +1551,8 @@ function eventRow(e){
   }
   html += '    </div>';
   html += '    <div class="metarow">';
-  html += '      <span class="metaitem">'+clockIcon()+e.start+'–'+e.end+'</span>';
-  if(e.room) html += '      <span class="metaitem">'+pinIcon()+esc(e.room)+'</span>';
+  html += '      <span class="metaitem time">'+clockIcon()+e.start+'–'+e.end+'</span>';
+  if(e.room) html += '      <span class="metaitem">'+pinIcon()+esc(e.room.replace('MuseumsQuartier','MQ'))+'</span>';
   html += '    </div>';
   if(speakerLine) html += '    <div class="meta">'+esc(speakerLine)+'</div>';
   html += '    <div class="tagsrow">'+(live?'<span class="badge live-badge">● Now</span>':'')+'<span class="badge" style="--cat-color:var('+color+');--cat-soft:var('+soft+')">'+catLabel(e.cat)+'</span>';
