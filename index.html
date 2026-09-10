@@ -1580,6 +1580,7 @@ function eventRow(e){
   html += '    </div>';
   if(speakerLine) html += '    <div class="meta">'+esc(speakerLine)+'</div>';
   html += '    <div class="tagsrow">'+(live?'<span class="badge live-badge">● Now</span>':'')+'<span class="badge" style="--cat-color:var('+color+');--cat-soft:var('+soft+')">'+catLabel(e.cat)+'</span>';
+  if(e.lang) html += '<span class="badge outline">'+esc(e.lang)+'</span>';
   if(e.note) html += '<span class="badge outline">Note</span>';
   html += '</div>';
   html += '  </div>';
@@ -1603,14 +1604,15 @@ function pinIcon(){
 /* ============================= RENDER: MY PLAN ============================= */
 
 function renderPlan(){
-  var timedSaved = EVENTS.filter(function(e){ return isSaved(e.id) && !e.slotTBC; });
-  var workshopSaved = EVENTS.filter(function(e){ return isSaved(e.id) && e.slotTBC; });
+  var allSaved = EVENTS.filter(function(e){ return isSaved(e.id); });
+  var timedSaved = allSaved.filter(function(e){ return !e.slotTBC; });
+  var workshopSaved = allSaved.filter(function(e){ return e.slotTBC; });
   var byDay = {1:[], 2:[]};
-  timedSaved.forEach(function(e){ byDay[e.day].push(e); });
+  allSaved.forEach(function(e){ byDay[e.day].push(e); });
   byDay[1].sort(function(a,b){return a.start.localeCompare(b.start);});
   byDay[2].sort(function(a,b){return a.start.localeCompare(b.start);});
 
-  var totalSaved = timedSaved.length + workshopSaved.length;
+  var totalSaved = allSaved.length;
   var html = '';
   html += '<div class="planhead"><h2>My Plan</h2><p>Bookmarked sessions across both days, saved on this device.</p></div>';
   html += '<div class="plan-card">';
@@ -1624,7 +1626,7 @@ function renderPlan(){
   }
   html += '</div>';
 
-  if(timedSaved.length === 0 && workshopSaved.length === 0){
+  if(totalSaved === 0){
     html += '<div class="empty"><span class="big">☆</span><p>Nothing saved yet.</p><p style="margin-top:-6px">Tap the star on any session in the Program to add it here.</p><button id="goSchedule">Browse the program</button></div>';
     return html;
   }
@@ -1635,12 +1637,6 @@ function renderPlan(){
     byDay[d].forEach(function(e){ html += eventRow(e); });
   });
 
-  if(workshopSaved.length){
-    html += '<div class="daylabel">Workshops · Day 1 afternoon</div>';
-    html += '<div class="subgrid" style="padding:2px 14px;">';
-    workshopSaved.forEach(function(w){ html += subcard(w); });
-    html += '</div>';
-  }
   return html;
 }
 
